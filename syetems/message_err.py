@@ -48,7 +48,7 @@ else:
 
 count = 0
 for line in f1:
-    if "centos1" in line or "DHCPREQUEST" in line:
+    if "centos1" in line.lower() or "dhcprequest" in line.lower():
         f2.write(line)
         count += 1
 
@@ -58,7 +58,7 @@ print count
 if count > 0:
     print "存在报错日志...."
     count = str(count)
-    msg_send('xiangys_0134@sina.com', 'meiyoumima~!@0', ['250919938@qq.com'], "存在日志错误", count,file2)
+    msg_send('xiangys_0134@sina.com', 'meiyoumima~!@0', ['250919938@qq.com','xiangys0134@sina.com'], "存在日志错误", count,file2)
 
 
 
