@@ -1,0 +1,163 @@
+练习题：
+1、简述变量命名规范
+答：
+   1、变量命名可以为任意字符、数字、下划线组成
+   2、不能以数字进行开头
+   3、不能有特殊字符或者python内置的函数作为变量名
+   4、变量名命名做到见名知意，推荐使用驼峰体或者下划线进行见名知意
+   5、对于变量的描述建议使用下划线简洁展示
+
+2、name = input(">") name变量是什么数据类型?
+答：
+   字符串数据库类型
+
+3、if条件语句的基本结构?
+答：
+  1.if单分支语句；该语句只进行一个条件判断,如条件为True或False则执行对应的语句
+  2.if..else..双分支流程控制语句；该语句类似以上,唯一不同点为无论条件为True或False都会有对应的执行语句
+  3.if..elif..else..多分支流程控制语句；与以上类似，可以进行多个条件判断,匹配规则则自上而下进行判断
+
+4、用print打印出下面内容：
+文能提笔安天下,  
+武能上马定乾坤.  
+心存谋略何人胜,  
+古今英雄唯是君.
+答：
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	weijiang = '''
+	文能提笔安天下,  
+	武能上马定乾坤.  
+	心存谋略何人胜,  
+	古今英雄唯是君.
+	'''
+	print(weijiang)
+	
+5、利用if语句写出猜大小的游戏：
+设定一个理想数字比如：66，让用户输入数字，如果比66大，则显示猜测的结果大了；如果比
+66小，则显示猜测的结果小了;只有等于66，显示猜测结果正确。
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	num = 66
+	flag = 0
+	while flag != num:
+		guess_num = input('请输入你要猜的数字:')
+		if guess_num.isdigit():
+			guess_num = int(guess_num)
+			if guess_num > 66:
+				print('大了')
+			elif guess_num < 66:
+				print('小了')
+			else:
+				print('猜对了')
+				flag = num
+		else:
+			print('请输入数字')
+			
+
+6、提示用户输入他的年龄，程序进行判断
+如果小于10, 提示小屁孩, 如果大于10, 小于20, 提示青春期叛逆的小屁孩. 如果大于20, 小于30. 提示开始定性, 开始混社会的小屁孩儿, 如果大于30, 小于40. 体制看老大不小了, 赶紧结婚小屁孩儿. 如果大于40, 小于50. 提示家里有个不听话的小屁孩儿. 如果大于50, 小于60. 提示自己马上变成不听话的老屁孩儿.如果大于60, 小于70. 提示活着还不错的老屁孩儿. 如果大于70, 小于 90. 提示人生就快结束了的一个老屁孩儿. 如果大于90以上. 提示. 再见了这个世界.
+答：
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	flag = True
+	while flag:
+		guess_num = input('请输入你要猜的数字,退出按q:')
+		if guess_num.isdigit():
+			guess_num = int(guess_num)
+			if guess_num >= 90:
+				print('再见了,这个时间')
+			elif guess_num >= 70:
+				print('人生快结束了')
+			elif guess_num >= 60:
+				print('还不错的老屁孩')
+			elif guess_num >= 50:
+				print('即将变成不听话的老屁孩')
+			elif guess_num >= 40:
+				print('差不多写到这了')
+			else:
+				print('人生黄金年龄')
+		else:
+			if guess_num == "q" or guess_num == "Q":
+				pass
+				exit(8)
+			else:
+				print('请输入数字')
+
+7、单行注释以及多行注释?
+答：
+单行注释：#
+多行注释：三个单引号或者双引号('''、""")
+
+8、简述你所知道的python3X和python2X的区别
+答：
+除去函数更变有很大不同，有些函数变化挺大。例如print/print()
+
+9、提示用户输入麻花藤. 判断用户输入的对不对. 如果对, 提示真聪明, 如果不对, 提示你是傻逼么
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	guess_name = "麻花藤"
+	guess = input('请输入mahuateng的中文:')
+	if guess == guess_name:
+		print('猜对了')
+	else:
+		print('傻逼了')
+		
+10、使用while循环输入1 2 3 4 5 6     8 9 10
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	count = 10
+	i = 1
+	while i <= count:
+		if i == 6:
+			print(str(i) + '   ',end=" ")
+		else:
+			print(i,end=" ")
+		i += 1
+
+11、求1-100的所有数的和
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	flag = 100
+	count = 0
+	i = 1
+	while i <= flag:
+		count += i
+		i += 1
+
+	print(count)
+	
+12、输入1-100内所有的奇数
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	flag = 100
+	i = 1
+	while i <= flag:
+		if i % 2 != 0:
+			print(i,end=" ")
+		i += 1	
+13、输入1-100内所有的偶数
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	flag = 100
+	i = 1
+	while i <= flag:
+		if i % 2 == 0:
+			print(i,end=" ")
+		i += 1
+
+14、求1-2+3-4+5...99的所有数的和
+	#!/usr/bin/python
+	# -*- coding: utf-8 -*-
+	flag = 100
+	i = 1
+	count = 0
+	while i < flag:
+		if i % 2 == 0:
+			count -= i
+		else:
+			count += i
+		i += 1
+
+	print(count)
+
