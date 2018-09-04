@@ -35,35 +35,54 @@ def goods_list():
 #         print('请输入正确金额')
 #         return 2
 
-#商品消费余额、结算判断,判断机制：函数返回3个值，分别是商品、价格、余额.同时将商品写入字典中
+
+#商品消费余额、结算判断,判断机制：函数返回3个值，分别是商品、价格、余额.同时将商品写入字典或者文件中 tb1设计字样{'电脑':2} //2表示购买数量
 tb1 = {}
 l1 = []
 left_money = 0
-#传参商品及余额
-def goods_select(goods,mon):
-    mon -= a[goods][1]
+#购买商品运算函数,传参商品序号及余额,将每次的余额写入到一个列表中,最终结算时取-1索引值 goods_id表示读取商品字典的序号
+def goods_select(goods_id,mon):
+    #购买商品判断,对购买商品的余额进行判断,如果列表为空则将第一次传参的金额写入到列表l1中作为余额使用
+    if l1:
+        l1[0] = mon
+    else:
+        remain = mon - a[goods_id][1]
+        #如果余额大于则进行运算
+        if l1[-1] >= remain:
+            l1.append(remain)
+            #对商品进行判断并写入字典中,如果商品已经存在字典中则对商品数量进行相加处理tb1 = {'电脑':2,'鼠标':1}
+            shopping_names = a[goods_id[0]]
+            if shopping_names in tb1:
+                tb1[shopping_names] += 1
+            else:
+                tb1[shopping_names] = 1
+    #将余额列表l1,购买商品字典tb1做return返回
+    return l1,tb1
 
     #print(mon)
     #print(a[goods][0])
-    if goods == 'n':
-        #print('即将进行结算') 3表示即将进行结算
-        return 3
-    elif goods in a:
-        if mon >= 0:
-            #将商品名和价格存入字典中
-            k = a[goods][0]
-            y = a[goods][1]
-            #print(k,y)
-            tb1[k] = y
-            l1.append(y)
-            ##0表示将商品写入到字典中
-            return 0
-        else:
-            #print('余额不足') 1表示用户余额不足
-            return 1
-    else:
-        #print('输入的商品选项有误') 2表示商品选项输入错误
-        return 2
+    # if goods_id == 'n':
+    #     #print('即将进行结算') 3表示即将进行结算
+    #     #print('进行结算中....')
+    #     if tb1:
+    #         return
+
+    # elif goods in a:
+    #     if mon >= 0:
+    #         #将商品名和价格存入字典中
+    #         k = a[goods][0]
+    #         y = a[goods][1]
+    #         #print(k,y)
+    #         tb1[k] = y
+    #         l1.append(y)
+    #         ##0表示将商品写入到字典中
+    #         return 0
+    #     else:
+    #         #print('余额不足') 1表示用户余额不足
+    #         return 1
+    # else:
+    #     #print('输入的商品选项有误') 2表示商品选项输入错误
+    #     return 2
 
 #用户充值,与用户进行交互输入金额，如非数字则重新输入，注意：充值只能充值整数
 flag = True
