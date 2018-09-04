@@ -17,7 +17,6 @@ a ={
 def goods_list():
     print('\033[0;31;46m商品列表\033[0m')  #打印对应商品
     for k,y in a.items():
-    #     if k != 'n':
         print('序号:%s \t  商品型号：%s \t 商品价格：%s'%(k,a[k][0],a[k][1]))
     #print('序号:n \t\t %s'%a['n'])
 
@@ -45,7 +44,6 @@ def goods_select(goods_id):
             else:
                 tb1[shopping_names] = 1
                 #将余额列表l1,购买商品字典tb1做return返回,用于显示
-            #return l1,tb1,1
             return 1
         else:
             return 0
