@@ -13,6 +13,39 @@ a ={
        # 'n':'购物车结算'
     }
 
+
+select_user = ['登录','注册','购物','退出']
+#用户信息保存文件,文件存储格式 'user password'
+users_file = 'users.txt'
+
+def loggin(user,password):  #用户登陆函数
+    with open(users_file,encoding='utf-8') as f_user:
+        for i in f_user:
+            user_info = i.split()
+            if user == user_info[0] and password == user_info[1]:
+                return 1
+
+def register(user,password):    #0 表示用户已存在 1表示用户注册成功 2表示用户注册时不能使用特殊字符
+    with open(users_file,encoding='utf-8') as f_user:
+        for i in f_user:
+            user_info = i.split()
+            if user == user_info[0]:    #判断用户是否存在,存在则返回0
+                return 0
+    if str(user).isalnum() == False or str(password).isalnum() == False:    #账号密码不能为特殊字符
+        return 2
+
+    with open(users_file,'a',encoding='utf-8') as f_user:
+        f_user.write('\n' + user + '\t')
+        f_user.write(password)
+        return 1
+
+
+
+
+if (id -1) == 0:    #用户进行登陆
+    pass
+
+
 #商品列表函数，该函数主要用来打印商品列表
 def goods_list():
     print('\033[0;31;46m商品列表\033[0m')  #打印对应商品
