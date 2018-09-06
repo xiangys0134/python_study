@@ -27,20 +27,21 @@ def loggin(user,password):  #用户登陆函数
             if i == '':
                 continue
             user_info = i.split()
-            if user == user_info[0] and password == user_info[1]:
+            ##去除空格
+            if user.strip().lower() == user_info[0].strip().lower() and password.strip() == user_info[1].strip():
                 return 1
 
 def register(user,password):    #0 表示用户已存在 1表示用户注册成功 2表示用户注册时不能使用特殊字符
     with open(users_file,encoding='utf-8') as f_user:
         for i in f_user:
             user_info = i.split()
-            if user == user_info[0]:    #判断用户是否存在,存在则返回0
+            if user.strip().lower() == user_info[0].strip().lower():    #判断用户是否存在,存在则返回0
                 return 0
     if str(user).isalnum() == False or str(password).isalnum() == False:    #账号密码不能为特殊字符
         return 2
 
     with open(users_file,'a',encoding='utf-8') as f_user:
-        f_user.write(user + '\t' + password +'\n')
+        f_user.write(user.strip() + '\t' + password.strip() +'\n')
         return 1
 
 
@@ -98,60 +99,6 @@ def goods_select(goods_id):
         else:
             return 0
 
-# flag = True
-
-# def shopping():
-    #用户充值,与用户进行交互输入金额，如非数字则重新输入，注意：充值只能充值整数
-# flag = True
-# while flag:
-#     mon = input('请输入需要充值的金额:')
-#     #对金额进行判断
-#     if mon.isdigit() == False:
-#         print('输入值有误,请重新输入!!!')
-#         continue
-#     #result = char_money(mon)
-#     # if result == 0:
-#     print('充值成功,充值金额为:%s'%mon)
-#     mon = int(mon)
-#     flag = False
-
-
-#商品购买,通过循环与用户进行交互
-# flag = True
-# while flag:
-#     goods_list()
-#     #mon = int(mon)
-#     goods = input('请输入你要购买的商品序号,退出按键[n|N]:')
-#     #判断如果用户退出则进行换算
-#     if goods == 'n' or goods == 'N':
-#         ##退出时判断是否之前有过购买记录,有则打印
-#         if tb1:
-#             print('\033[32;0m你购买的商品如下:\033[0m')
-#             for k, v in tb1.items():
-#                 print('商品：%s  数量：%s' % (k, v))
-#             print('余额：\033[1;35m %s \033[0m' % (l1[-1]))
-#         else:
-#             #若为购买商品则直接打印充值金额mon
-#             print('未购买商品 余额：\033[1;35m %s \033[0m' % (mon))
-#         #flag = False
-#         break
-#
-#     #商品购买机制判断选项如果是非n或者是数字,其实只需要判断是数字即可
-#     if not goods.isdigit() or goods not in a:
-#         print('\033[1;35m 选择错误,请重新选择!\033[0m')
-#         print('\n\n')
-#         continue
-#
-#     #用户正常进行购物车选择商品
-#     a1 = goods_select(goods)
-#     if a1 == 1:
-#         print('\033[1;32m购物车：\033[0m')
-#         for k, v in tb1.items():
-#             print('商品：%s  数量：%s' % (k, v))
-#         print('\033[0;31m余额：%s \033[0m' % (l1[-1]))
-#         print('\n')
-#     else:
-#         print('商品：\033[0;31m%s\033[0m无法进行购买,余额：\033[0;31m %s \033[0m' % (a[goods][0], l1[-1]))
 
 flag = True
 count = 1
@@ -172,13 +119,29 @@ while flag:
                     #对用户进行判断
                     result = loggin(user,password)
                     if result == 1:
-                        print('用户登录成功')
+                        #print('用户登录成功')
                         if os.path.exists(session_file):    #情况session用户登录状态
+                            f1 = open(session_file,'r',encoding='utf-8')
+                            f1_id = f1.readlines()
+                            f1.close()
+                            if f1_id[0] == user:
+                                print('用户：%s 已处于登录状态中...'%f1_id[0])
+                                count = 4
+                            # else:
+                            #     #os.remove(session_file)
+                            #     with open(session_file, 'w', encoding='utf-8') as f2:
+                            #         f2.write(user)
+                            #     count = 5
+                        else:
                             os.remove(session_file)
-                        with open(session_file,'w',encoding='utf-8') as f1:
-                            f1.write(user)
-                        flag = False
-                        break
+                            with open(session_file,'w',encoding='utf-8') as f1:
+                                f1.write(user)
+                            count = 5
+                        print('用户登录成功')
+
+
+                        #flag = False
+                        #break
                     else:
                         print('用户登录失败,请重新登录')
                         count += 1
@@ -193,7 +156,7 @@ while flag:
                     password = input('注册密码：')
                     result = register(user,password)
                     if result == 0:
-                        print('用户已存在')
+                        print('用户已存在,请重新注册!')
                     elif result == 2:
                         print('请使用字母大小写及数字')
                     elif result == 1:
@@ -239,7 +202,7 @@ while flag:
                                 ##退出时判断是否之前有过购买记录,有则打印
                                 if tb1:
                                     with open(session_file,'r',encoding='utf-8') as f1:
-                                        f1 = f1.readline()[0]
+                                        f1 = f1.readlines()[0]
                                     print('\033[32;0m用户:%s 你购买的商品如下:\033[0m'%(f1))
                                     for k, v in tb1.items():
                                         print('商品：%s  数量：%s' % (k, v))
@@ -273,14 +236,12 @@ while flag:
 
             if int(client_select_id) == 3:  #退出
                 print('退出')
+                if os.path.exists(session_file):
+                    os.remove(session_file)
                 break
 
 
 
-
-
-# if (int(id) -1) == 0:    #用户进行登陆
-#     pass
 
 
 
