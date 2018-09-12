@@ -8,6 +8,7 @@
 #2.通过列表tb1将用户的登录信息存放至该列表中，默认环境为单用户登陆环境，列表只保存了一个session值
 #通过用户交互输入0-7数字后if判断调用对应的函数
 #在调用相关函数后会将日志写入accesslog.log中，日志格式：2018-09-12 19:37:05 调用函数logout 返回值:1
+#https://github.com/xiangys0134/job/blob/master/day4/cnblog.py
 
 import time
 
@@ -203,14 +204,3 @@ while flag:
     elif seve_id == '7':    #退出程序
         print('程序退出...')
         exit(5)
-
-
-
-
-
-
-
-
-
-
-
