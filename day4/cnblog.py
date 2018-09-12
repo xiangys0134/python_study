@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-#yousong.xiang
+#yousong.xiang 2018.9.12
 #模拟博客园登陆
 #v1.0.1
+#功能介绍：
+#1.文件存放在register目录中，用户注册通过该文件进行判断用户是否已存在
+#2.通过列表tb1将用户的登录信息存放至该列表中，默认环境为单用户登陆环境，列表只保存了一个session值
+#通过用户交互输入0-7数字后if判断调用对应的函数
+#在调用相关函数后会将日志写入accesslog.log中，日志格式：2018-09-12 19:37:05 调用函数logout 返回值:1
 
 import time
 
