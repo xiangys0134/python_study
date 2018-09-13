@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-#yousong.xiang 2018.9.12
+#yousong.xiang 2018.9.13
 #模拟博客园登陆
-#v1.0.1
+#v1.0.2
 #功能介绍：
 #1.文件存放在register目录中，用户注册通过该文件进行判断用户是否已存在
 #2.通过列表tb1将用户的登录信息存放至该列表中，默认环境为单用户登陆环境，列表只保存了一个session值
 #通过用户交互输入0-7数字后if判断调用对应的函数
 #在调用相关函数后会将日志写入accesslog.log中，日志格式：2018-09-12 19:37:05 调用函数logout 返回值:1
 #https://github.com/xiangys0134/job/blob/master/day4/cnblog.py
+#review:
+#1.修复已登录状态下还能进行注册交互bug
+#2.修复日志文件第一空行展示
+#3.修复用户密码文件默认不存在时创建文件，不进行初始化创建一个用户名、密码
 
-import time
+import time,os
 
 l1 = ['请登录','请注册','文章页面','日记页面','评论页面','收藏页面','注销','退出程序']
 user_db = 'register'    #用户信息表
@@ -18,11 +22,17 @@ tb1 = []    #将登陆信息作为session存储到字典中
 c_time = time.time()
 log = 'accesslog.log'
 
+if os.path.exists(user_db) == False:
+    fp = open(user_db,'w',encoding='utf-8')
+    # fp.write('alex,123')  #默认写一个账号密码入文件中
+    fp.close()
+
+
 #登录检测装饰器
 def login_check(func):
     '''登录检测函数,如果用户已经登录则将用户session写入列表tb1中,不为空则跳出登录验证'''
     def inner(*args,**kwargs):
-        print(tb1)
+        #print(tb1)
         if tb1 == []:
             #print(tb1)
             #print('aaaa')
@@ -56,19 +66,25 @@ def login(user,password):
 
 
 #注册函数
-@login_check    #判断用户是否已经登录,如果已经登录则不能进行注册
+@login_check    #判断用户是否已经登录,如果已经登录则不能进行注册register = inner()  register(user,password)
 def register(user,password):
-    with open(user_db,'r',encoding='utf-8') as f:
+    result = os.path.getsize(user_db)
+    if result == 0: #如果是空文件则不换行存储用户信息，同时无需校验用户是否已存在
+        with open(user_db, 'a', encoding='utf-8') as f1:
+            f1.write(str(user).strip() + ',' + str(password).strip())
+            tb1.append(str(user).strip())
+            return 1
+
+    with open(user_db,'r',encoding='utf-8') as f:   #判断用户是否已经存在,注册的用户已经存在的话，则return
         for i in f:
             if str(user).strip().lower() == i.lower():
                 return 0
 
-    with open(user_db,'a',encoding='utf-8') as f1:
-        f1.write(str(user).strip() + ',' + str(password).strip() + '\n')
+    with open(user_db,'a',encoding='utf-8') as f1:  #最终对用户进行写入
+        f1.write('\n' + str(user).strip() + ',' + str(password).strip())
         #tb1[str(user).strip()] = c_time
         tb1.append(str(user).strip())
         return 1
-
 
 
 
@@ -92,8 +108,17 @@ def wrapper_logs(func):
         logs_time = time.strftime('%Y-%m-%d %H:%M:%S')
         names = func.__name__
         print('我调用了%s函数'%names)
-        with open(log,'a',encoding='utf-8') as f:
-            f.write('\n%s 调用函数%s 返回值:%s'%(logs_time,names,ret))
+        if os.path.exists(log) ==False:
+            f = open(log,'w',encoding='utf-8')
+            f.close()
+        result = os.path.getsize(log)
+        if result == 0:
+            with open(log, 'a', encoding='utf-8') as f:
+                f.write('%s 调用函数%s 返回值:%s' % (logs_time, names, ret))
+        else:
+            with open(log,'a',encoding='utf-8') as f:
+                f.write('\n%s 调用函数%s 返回值:%s'%(logs_time,names,ret))
+
         return ret
     return inner
 
@@ -147,6 +172,9 @@ while flag:
             continue
 
     if seve_id == '0':  #登陆序号
+        if tb1:
+            print('用户已经处于登录状态,无法再进行登录')
+            continue
         i = 1
         while i <=3:
             user = input('请输入你的用户:')
@@ -161,7 +189,7 @@ while flag:
             elif ret == 1:
                 print('登录成功,欢迎你%s'%(tb1[0]))
                 break
-            elif ret == 2:
+            elif ret == 2:  #已经在函数login新增判断，该return 失败
                 print('用户已经登录,无需再次登录')
                 i = 4
             else:
@@ -173,6 +201,9 @@ while flag:
 
     elif seve_id == '1':    #注册序号
         l2 = []
+        if tb1:
+            print('用户已经处于登录状态,无法再进行注册')
+            continue
         user = input('请输入注册用户名:')
         password = input('请输入密码:')
         ret = register(user,password)
@@ -180,7 +211,7 @@ while flag:
             print('该用户已注册,请重新注册')
         elif ret == 1:
             print('用户%s注册成功'%(tb1[0]))
-        elif ret == 2:
+        elif ret == 2:  #在全局作用域下做了条件判断,该return返回失效
             print('用户已经处于登录状态,无法再进行注册')
         else:
             print('注册用户异常')
