@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 '''
 author:yousong.xiang 2018.10.27
-v1.0.1
+v1.0.2
 1 - 2 * ( (60-30 +(-40/5) * (9-2*5/3 + 7 /3*99/4*2998 +10 * 568/14 )) - (-4*3)/ (16-3*2) )
 处理逻辑：
 1.将字符串进行匹配最内层值，即不包含()符号的值
@@ -10,12 +10,13 @@ v1.0.1
 3.计算括号内的值并通过字符串切片将字符串进行拼接
 4.递归调用函数直到字符串中不在包含有()，则将最后的结果返回
 
-做不出来了，在9-2*5/3+7/3*99/4*2998+10*568/14 在此类没有括号的时候的计算方式，先乘除后加减
+出现bug!!!
 
 '''
 import re
 
 a = '1 - 2 * ( (60-30 +(-40/5) * (9-2*5/3 + 7 /3*99/4*2998 +10 * 568/14 )) - (-4*3)/ (16-3*2) )'
+a = '1 - 2 * ( (60-30 +(-40/5) - (-4*3)/ (16-3*2) )'
 
 #去除最里层的值
 brackets='\([^\(\)]+\)'
@@ -29,36 +30,46 @@ brackets='\([^\(\)]+\)'
 # opp_div = r'(\d+\.?\d?/d+\.?\d?)|(-\d+\.?\d?/d+\.?\d?)'
 
 
-#算术运算
-def int_sub(value):
+#算术运算,需事先类似(16-3*2/3) 这种表达式处理 正则进行判断
+def int_sub(value,count=0):
     '''获取值并进行计算'''
-    #如果最后的值为-40之类则直接返回value
-    ret = re.compile('[\+\-]')
-    ret = ret.findall(value)
-    ret = ''.join(ret)
-    if ret == '+' or ret == '-':
-        return value
+    # ret_tmp = re.findall('[\-]?(\d+[\.]?\d{0,})([\+\*\/\-])(\d+[\.]?\d{0,})',value)
+    # if ret_tmp: #只要存在表达式类似为16-3*2/3该方式则进行递归求值
 
-    ##获取到+ - * /
-    #value = -40/5
+
+        # b = re.findall('[\+\-\*\/]', value)
+
+        ##9-2*5/3+7/3*99/4*2998+10*568/14
+        # first_ret = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', value).span()[0]
+        # second_ret = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', value).span()[1]
+        # count_str1 = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', value).group().strip('[()]')
+
+        ##获取到+ - * /
+        #value = -40/5
     ret = re.compile('[\-]?\d+[\.]?\d{0,}([\*\/\+\-]+)[\-]?\d+[\.]?\d{0,}')
     b = ret.findall(value)
-    # b = re.findall('[\+\-\*\/]', value)
-
 
 
     str_split = ''.join(b)
+    print(str_split)
     num_first = str(value).split(str_split)[0]
     print('47行测试:',num_first)
     num_second = str(value).split(str_split)[1]
     print('78行测试:',num_second)
 
-    if num_first.isdigit():
+    #判断元素值并进行int、float转换
+    # num_first_new =  str(num_first)[:]
+    num_first_new = re.findall('\d+[\.]?\d{0,}',num_first)[0]
+
+    # num_second_new = str(num_second)[:]
+    num_second_new = re.findall('\d+[\.]?\d{0,}',num_second)[0]
+
+    if num_first_new.isdigit():
         num_first = int(num_first)
     else:
         num_first = float(num_first)
 
-    if num_second.isdigit():
+    if num_second_new.isdigit():
         num_second = int(num_second)
     else:
         num_second = float(num_second)
@@ -106,21 +117,38 @@ def foo(str1,count=0):
         print('打印测试：',str_expr)
         return foo(str_expr,sub_count)
     else:
-        if re.search('[\+\-\*\/]',str1):
-            #此种类型方式9-2*5/3+7/3*99/4*2998+10*568/14
-            first_ret = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', str1).span(0)
-            second_ret = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', str1).span(1)
+        ret = re.findall('[-]?\d+[\.]?\d{0,}', str1)
+        str1_lenth = len(ret)
+        if str1_lenth == 1:
+            return count
+        else:
+            # 此种类型方式9-2*5/3+7/3*99/4*2998+10*568/14
+            first_ret = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', str1).span()[0]
+            second_ret = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', str1).span()[1]
             count_str1 = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', str1).group().strip('[()]')
-            print('计算######',count_str1)
+            print('计算######', count_str1)
             sub_count = int_sub(count_str1)
+            str_expr = str1[:first_ret] + str(sub_count) + str1[second_ret:]
+            print('打印第二次测试:', str_expr)
+            return foo(str_expr, sub_count)
 
-            try:
-                # 字符串拼接
-                str_expr = str1[:first_ret] + str(sub_count) + str1[second_ret:]
-                print('打印第二次测试:',str_expr)
-                return foo(str_expr,sub_count)
-            except Exception:
-                return sub_count
+        # if re.search('[\+\-\*\/]',str1):
+        #     #此种类型方式9-2*5/3+7/3*99/4*2998+10*568/14
+        #     first_ret = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', str1).span()[0]
+        #     second_ret = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', str1).span()[1]
+        #     count_str1 = re.search('(\d+[\.]?\d{0,})([\*\/])([\-]?\d+[\.]?\d{0,})', str1).group().strip('[()]')
+        #     print('计算######',count_str1)
+        #     sub_count = int_sub(count_str1)
+        #
+        #     #最后一个表达式 5 + 9 怎么处理? 得到一个单一值后怎么对递归进行退出?
+        #
+        #     try:
+        #         # 字符串拼接
+        #         str_expr = str1[:first_ret] + str(sub_count) + str1[second_ret:]
+        #         print('打印第二次测试:',str_expr)
+        #         return foo(str_expr,sub_count)
+        #     except Exception:
+        #         return sub_count
 
 
 
