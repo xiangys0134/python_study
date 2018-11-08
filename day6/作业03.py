@@ -109,15 +109,15 @@ def cal_str(str1,count=0):
         # else:
         #     pass
     else:
-        print(count,type(count),'bbbbb')
+        # print(count,type(count),'bbbbb')
         return count
 
 
 
 
-anm = cal_str('-9*2/2-5*3')
+# anm = cal_str('-9*2/2-5*3')
 
-print(cal_str('-9*2/2-5*3'),'###')
+# print(cal_str('-9*2/2-5*3'),'###')
 
 # print(a,type(a))
 
@@ -143,10 +143,11 @@ def foo(str1):
     if re.findall('\([^()]+\)',str1):
         # print(first1)
         first1 = re.findall('\([^()]+\)',str1)[0].strip('()')
-        print('#',first1)
+        # print('#',first1)
         sub_1 = cal_str(first1)
-        print(sub_1)
-        str1 = re.sub('\([^()]+\)',str(sub_1),first1,1)
+        # print(sub_1)
+        str1 = re.sub('\([^()]+\)',str(sub_1),str1,1)
+        # print(str1)
         return foo(str1)
     elif re.search('^[\-]?\d+[\.]?\d{0,}[\+\-\*\/]+',str1):
         sub_1 = cal_str(str1)
