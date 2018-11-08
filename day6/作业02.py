@@ -28,6 +28,7 @@ def sub_sesult(value,count=0):
     ''' 计算参数值，例如4*2998+10*568/14'''
     value = sub_indent(value)
 
+    #先判断有乘除，再判断有加减，下面的写法有问题
     if re.findall('[-]?\d+[\.]?\d{0,}[\*\/\+\-]',value):
         if re.findall(r'[-]?\d+[.]?\d{0,}[*/][-]?\d+[.]?\d{0,}',value):
             ret = re.search(r'[-]?\d+[.]?\d{0,}([*/][-])?\d+[.]?\d{0,}',value)    #获取值4*2998
@@ -62,7 +63,10 @@ def sub_sesult(value,count=0):
                 count = r'+'+ str(count)
             #将匹配的值替换成对应的count
 
-
+            str_expr = re.sub(r'[-]?\d+[.]?\d{0,}([*/][-])?\d+[.]?\d{0,}',str(count),value,)
+            sub_sesult(str_expr,count)
+        elif re.findall(r'[+-]?\d+[.]?\d{0,}[+-][-]?\d+[.]?\d{0,}',value):
+            ret = re.search(r'[+-]?\d+[.]?\d{0,}([+-][-])?\d+[.]?\d{0,}', value)
 
 
 

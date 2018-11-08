@@ -5,8 +5,18 @@
 #学生选课系统
 
 '''
-1.通过文件存储两张表(成功信息表,课程表)；学生表："alex,123,student,java,python"，课程表：'java,c++,python,c#'
-2.创建两个类分别为学生类，管理员类
+1.对象学生，可以查看所有课程，选择课程
+2.对象管理员，创建账号，创建课程，查看课程，查看所有学生，查看所有学生选课
 '''
 
-#预先生成数据文件
+#用户表
+student = [{'username':'user01','password':'123','role':'student'},{'username':'user02','password':'123','role':'student'}]
+
+#课程表
+course = ['java','python','c++']
+
+#选课表
+select_course = [{'user':'user01','course':['java','python']}]
+
+with open('roles','r',encoding='utf8') as f1:
+    
