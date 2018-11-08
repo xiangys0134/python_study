@@ -18,5 +18,12 @@ course = ['java','python','c++']
 #选课表
 select_course = [{'user':'user01','course':['java','python']}]
 
+select_course1 = {
+    'user1':{
+
+    }
+
+}
+
 with open('roles','r',encoding='utf8') as f1:
     
