@@ -8,6 +8,7 @@ roles = {'user':'student','user01':'teacher'}
 userpass = {'user':'123','user01':'abc'}
 course = {'counrse':['c++','python','shell']}
 select_course = {'user':['python','java'],'user2':['c++','linux']}
+grade = {'12班':['user']}
 默认管理用户用户：user01/abc 学生用户：user/123
 """
 #用户角色表
