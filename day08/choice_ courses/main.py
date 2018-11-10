@@ -10,7 +10,7 @@ sutent_course = {'counrse':['c++','python','shell']}
 select_course = {'user':['python','java'],'user01':['python','java']}
 grade = {'12班':['user']}
 grade_teacher = {'12班':'test'}
-默认管理用户用户：user01/abc 学生用户：user/123
+默认管理用户用户：user01/abc 学生用户：user/123 讲师用户test/123
 请先手动运行db.py文件生成对应的基础数据文件，否则无法生成基础数据文件
 """
 import pickle,os,sys
@@ -159,13 +159,42 @@ class Manager:
                 print('\n')
 
     def create_grades(self,grades):
-        print('创建班级%s'%grades)
+        if grades in grade:
+            print('创建失败,班级%s已经创建'%(grades))
+        else:
+            grade[grades] = []
+            str_grade = pickle.dumps(grade)
+            with open(os.path.join(grade_db_dir, 'grade.db'), 'wb') as f:
+                f.write(str_grade)
+            print('创建班级%s'%grades)
 
     def class_teacher(self,teacher):
-        print('创建班级讲师%s'%teacher)
+        if teacher in userpass:
+            roles[teacher] = 'Teacher'
+            print(roles)
+            str_roles = pickle.dumps(roles)
+            with open(os.path.join(roles_db_dir, 'roles.db'), 'wb') as f:
+                f.write(str_roles)
+            print('%s讲师创建成功'%teacher)
+        else:
+            print('无法创建讲师')
+
+        # print('创建班级讲师%s'%teacher)
 
     def create_students(self,student,grades):
-        print('学生%s加入班级%s'%(student,grades))
+        if student not in roles:
+            print('该学生不存在')
+            return 0
+        if grades not in grade:
+            print('该班级不存在')
+            return 2
+        if roles[student] == "Student":
+            grade[grades].append(student)
+            print(grade)
+            str_grade = pickle.dumps(grade)
+            with open(os.path.join(grade_db_dir, 'grade.db'), 'wb') as f:
+                f.write(str_grade)
+            print('学生%s加入班级%s'%(student,grades))
 
     def quit(self):
         print('退出')
@@ -201,10 +230,26 @@ class Teacher:
         # print('查看所有课程')
 
     def see_grades(self):
-        print('查看所有班级')
+        if os.path.exists(os.path.join(grade_db_dir, 'grade.db')):
+            with open(os.path.join(grade_db_dir, 'grade.db'), 'rb') as f:
+                f1 = f.read()
+                grade = pickle.loads(f1)
+        print('所有班级：')
+        for i in grade:
+            print(i,end=' ')
+        print('\n')
+        # print('查看所有班级')
 
-    def see_grades_students(self,grade):
-        print('查看%s学生'%grade)
+    def see_grades_students(self,grades):
+        if os.path.exists(os.path.join(grade_db_dir, 'grade.db')):
+            with open(os.path.join(grade_db_dir, 'grade.db'), 'rb') as f:
+                f1 = f.read()
+                grade = pickle.loads(f1)
+        for k,v in grade.items():
+            if grades in v:
+                print('%s所在班级%s'%(grades,k))
+
+        # print('查看%s学生'%grade)
 
     def quit(self):
         print('退出')
@@ -257,11 +302,11 @@ class Student:
         print('退出')
 
 if __name__ == '__main__':
-    # insert_user = input('请输入用户名：').strip()
-    # insert_pass = input('请输入密码：').strip()
+    insert_user = input('请输入用户名：').strip()
+    insert_pass = input('请输入密码：').strip()
 
-    insert_user = 'user01'
-    insert_pass = 'abc'
+    # insert_user = 'test'
+    # insert_pass = '123'
 
     for user,password in userpass.items():
         if user == insert_user and password == insert_pass:

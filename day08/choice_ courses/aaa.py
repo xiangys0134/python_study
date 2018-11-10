@@ -44,10 +44,11 @@ if os.path.exists(os.path.join(grade_db_dir,'grade.db')):
     with open(os.path.join(grade_db_dir,'grade.db'),'rb') as f:
         f1 = f.read()
         grade = pickle.loads(f1)
+print(grade)
 
 grade_teacher_db_dir = os.path.join(db_dir,'db')
 if os.path.exists(os.path.join(grade_teacher_db_dir,'grade_teacher.db')):
     with open(os.path.join(grade_teacher_db_dir,'grade_teacher.db'),'rb') as f:
         f1 = f.read()
         grade_teacher = pickle.loads(f1)
-print(grade_teacher)
+# print(grade_teacher)
