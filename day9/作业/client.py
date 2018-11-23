@@ -3,6 +3,8 @@
 import socket
 import json
 import os
+import auth
+
 
 
 dir = os.path.dirname(os.path.abspath(__name__))
@@ -24,6 +26,7 @@ tmp_list = [
     ('注册','register'),
     ('退出','exit')
 ]
+
 
 # print(len(tmp_list))
 class Myclient:
@@ -54,7 +57,8 @@ while True:
         # myclient = Myclient()
         username = input('请输入账号：').strip()
         pwd = input('请输入密码：').strip()
-        myclient = Myclient()
+        # myclient = Myclient()
+
 
         pass
     elif tmp_list[int(info)-1][1] == 'register':

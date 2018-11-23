@@ -16,3 +16,6 @@ class Auth:
             client.send(self.pwd.encode('utf8'))
             msg = client.recv(1024)
             return msg.decode('utf8')
+
+    def register(self):
+        pass
