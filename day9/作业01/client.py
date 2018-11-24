@@ -43,27 +43,49 @@ if __name__ == '__main__':
             client.mysend(file_msg.encode('utf8'))
 
             with open(info,'rb') as f:
-                print('aaaa')
-                sek_id = 0
+                md5 = hashlib.md5()
+                f_leng = 0
+                data = b''
+                send_size = 0
+                print(dic['file_size'],'##################')
+                for line in f:
+                    client.mysend(line)
+                    send_size += len(line)
+                    md5.update(line)
+
+
+
+
                 # while True:
-                f_msg = f.read(dic['file_size'])
-                client.mysend(f_msg)
+                #     if f_leng < dic['file_size']:
+                #         f_byte = f.read(1024)
+                #         client.mysend(f_byte)
+                #         # data += msg
+                #         md5.update(f_byte)
+                #         f_leng += len(f_byte)
+
+                # print('aaaa')
+                # sek_id = 0
+                # # while True:
+                # f_msg = f.read(dic['file_size'])
+                # client.mysend(f_msg)
                     # if not f_msg:
                     #     break
                     # client.mysend(f_msg)
                     # sek_id += 1024
                     # f.seek(sek_id)
 
-                md5 = hashlib.md5()
-                md5.update(f_msg)
+                # md5 = hashlib.md5()
+                # md5.update(f_msg)
                 dic['md5'] = md5.hexdigest()
-                print(dic)
+                print(dic,send_size)
 
                 #再将包拿出来
                 file_msg = json.dumps(dic)
                 print(file_msg, type(file_msg))
                 byte_msg = struct.pack('i', len(file_msg.encode('utf8')))
                 client.mysend(byte_msg)
+                print(len(file_msg.encode('utf8')),byte_msg,file_msg,type(file_msg))
                 client.mysend(file_msg.encode('utf8'))
                 # client.mysend()
 

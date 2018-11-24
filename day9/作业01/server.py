@@ -74,21 +74,24 @@ if __name__ == '__main__':
                 recv_leng += len(recv_data)
                 # f.write(ftp_msg)
                 m.update(recv_data)
+            print('xxxxx')
             md5_id = m.hexdigest()
 
+        print('aaaaaa')
         #获取字典
         msg = server.myrecv(4)
-        dic_byte = struct.unpack('i', msg)[0]
+        dic_byte = struct.unpack('i',msg)[0]
         print(dic_byte)
         msg = server.myrecv(dic_byte)  # 收到字典
         msg = msg.decode('utf8')
+        print(msg)
 
-        # msg = json.loads(msg)
-        # print(msg)
-        # print(md5_id)
-        #
-        # if str(md5_id) == str(msg['md5']):
-        #     print('md5值正确',md5_id)
+        msg = json.loads(msg)
+
+        print(md5_id)
+
+        if str(md5_id) == str(msg['md5']):
+            print('md5值正确',md5_id)
 
 
 
