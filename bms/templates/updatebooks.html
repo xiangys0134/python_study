@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/jquery.js">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<h3>编辑书籍</h3>
+<div class="row">
+    <div class="col-md-4 col-md-offset-3">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="title">书籍名称</label>
+                <input class="form-control" type="text" id="title" name="title" placeholder="{{ book.title }}" value="{{ book.title }}">
+            </div>
+            <div>
+                <label for="price">价格</label>
+                <input class="form-control" type="text" id="price" name="price" placeholder="{{ book.price }}" value="{{ book.price }}">
+            </div>
+            <div>
+                <label for="publish">出版社</label>
+                <select class="form-control" name="publish">
+                    {% for publish_name in pub %}
+                        <option value="{{ publish_name.name }}">{{ publish_name.name }}</option>
+                    {% endfor %}
+                </select>
+{#                <input class="form-control" type="text" id="publish" name="publish" placeholder="{{ book.publish }}" value="{{ book.publish }}">#}
+            </div>
+            <div>
+                <label for="publish">作者</label>
+                <select multiple class="form-control" name="author">
+                    {% for user in authors %}
+                        <option value="{{ user.name }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="pub_date">出版日期</label>
+                <input class="form-control" type="date" id="pub_date" name="pub_date" placeholder="{{ book.pub_date }}" value="{{ book.pub_date|date:'Y-m-d' }}">
+            </div>
+            <input type="submit" value="submit" class="btn btn-default pull-right">
+        </form>
+    </div>
+</div>
+</body>
+</html>

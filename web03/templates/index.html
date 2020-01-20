@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <title>Title</title>
+</head>
+<body>
+{% csrf_token %}
+<h3>index</h3>
+<button class="aa">ajax</button>
+<button class="ajax2">携带ajax</button>
+<p class="con"></p>
+
+<h1>计算器</h1>
+<input type="text" class="num1"> + <input type="text" class="num2"> = <input type="text" class="result"><input type="button" value="计算" class="cal">
+
+<script>
+    // ajax简单使用
+    $(".aa").click(function () {
+        //发送Ajax请求
+        $.ajax({
+            url: "index_banner/",
+            type: "get",
+            success: function (res) {
+                console.log(res)
+                $(".con").html(res)
+            }
+        })
+    })
+    //ajax的携带参数访问
+    $(".ajax2").click(function () {
+        $.ajax({
+            url: "index_banner2/",
+            type: "post",
+            data:{
+                csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                a:1,
+                b:2,
+            },
+            success:function (res) {
+                console.log(res)
+
+            }
+        })
+    })
+    //携参示例
+
+    $(".cal").click(function () {
+        let num1 = $(".num1").val()
+        let num2 = $(".num2").val()
+        console.log(num1,num2)
+
+        $.ajax({
+            url: "cal/",
+            type: "post",
+            data:{
+                n1:num1,
+                n2:num2,
+                csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+            },
+            success:function (res) {
+                console.log(typeof res);
+                {#console.log(JSON.parse(res));#}
+                let resonse = JSON.parse(res);
+                console.log(resonse.data)
+                $(".result").val(resonse.data)
+            }
+        })
+    })
+</script>
+</body>
+</html>

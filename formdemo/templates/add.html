@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+{#    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">#}
+</head>
+<body>
+<!--
+<h3>添加员工表</h3>
+<form action="" method="post">
+    {% csrf_token %}
+    <p>姓名<input type="text" name="name"></p>
+    <p>年龄<input type="text" name="age"></p>
+    <p>薪水<input type="text" name="salary"></p>
+    <input type="submit" value="submit">
+</form>
+-->
+<!--
+<hr>
+<h2>添加员工信息</h2>
+<form action="" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><input type="submit" value="submit"></p>
+</form>
+-->
+
+{#<hr>#}
+{#<form action="" method="post">#}
+{#    {% csrf_token %}#}
+{#    <div>#}
+{#        <label for="">姓名</label>#}
+{#        {{ form.name }}#}
+{#    </div>#}
+{#    <div>#}
+{#        <label for="">年龄</label>#}
+{#        {{ form.age }}#}
+{#    </div>#}
+{#    <div>#}
+{#        <label for="">薪水</label>#}
+{#        {{ form.salary }}#}
+{#    </div>#}
+{#    <input type="submit" value="submit">#}
+{#</form>#}
+
+
+{#<hr>#}
+{#<form action="" method="post" novalidate>#}
+{#    {% csrf_token %}#}
+{#    {% for field in form %}#}
+{#        <div>#}
+{#            <label for="">{{ field.label }}</label>#}
+{#            {{ field }}<span>{{ field.errors.0 }}</span>#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#    <input type="submit" value="submit">#}
+{#</form>#}
+
+<h3>Ajax</h3>
+<form action="" method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+    <div>
+        <label for="">{{ field.label }}</label>
+{#    {{ field }}<span class="error">{{ field.errors.0 }}</span>#}
+    {{ field }}<span class="error"></span>
+    </div>
+    {% endfor %}
+<input type="button" class="ajax_btn" value="submit">
+</form>
+
+<script>
+    $(".ajax_btn").click(function () {
+        $.ajax({
+            url: "",
+            type:"post",
+            data:{
+                "name":$("#id_name").val(),
+                "age":$("#id_age").val(),
+                "salary":$("#id_salary").val(),
+                csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+            },
+            success:function (res) {
+                {#console.log(res)#}
+                if (res.state){
+                    console.log("添加成功")
+                }else {
+                    $.each(res.erros,function (key,value) {
+                        console.log(key,value[0])
+                        $("#id_"+key).next().html(value[0])
+                    })
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>
+
