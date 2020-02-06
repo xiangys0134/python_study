@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+</head>
+<body>
+<h3>数据列表</h3>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading"><a href="{{ add_url }}" class="btn btn-primary">添加{{ table_name }}</a></div>
+                <div class="panel-body">
+
+                    <table class="table table-hover table-striped">
+                        <thead>
+
+                        <tr>
+                            {% for field in header_list %}
+                                <td>{{ field }}</td>
+                            {% endfor %}
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        {% for item in data %}
+                            <tr>
+                                {% for val in item %}
+                                    <td>{{ val }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

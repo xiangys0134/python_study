@@ -1,0 +1,16 @@
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <table class="table table-striped table-hover">
+            <form action="" method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="titile">{{ field.label }}</label>
+                        {{ field }}<span>{{ field.errors.0 }}</span>
+                    </div>
+                {% endfor %}
+            <input type="submit" value="submit">
+            </form>
+        </table>
+    </div>
+</div>

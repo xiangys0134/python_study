@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+
+</head>
+<body>
+<h3>添加数据</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form action="" method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                    <label for="">{{ field.label }}</label>
+                    {{ field }}<span>{{ field.errors.0 }}</span>
+                {% endfor %}
+                </div>
+                <input type="submit" value="submit" class="btn btn-default">
+
+
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+</html>

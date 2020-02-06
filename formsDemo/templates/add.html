@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+</head>
+<body>
+<!--
+<h3>添加员工表</h3>
+<form action="" method="post">
+    {% csrf_token %}
+    <p>姓名<input type="text" name="name"></p>
+    <p>年龄<input type="text" name="age"></p>
+    <p>薪水<input type="text" name="salary"></p>
+    <input type="submit" value="submit">
+</form>
+-->
+<!--
+<h3>渲染方式1</h3>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ ef.as_p }}
+    <input type="submit" value="submit">
+</form>
+-->
+{#<h3>渲染方式2</h3>#}
+{#<form action="" method="post" novalidate>#}
+{#    {% csrf_token %}#}
+{#    <div>#}
+{#        <label for="">姓名</label>#}
+{#        {{ ef.name }}<span>{{ ef.name.errors.0 }}</span>#}
+{#    </div>#}
+{#    <div>#}
+{#        <label for="">年龄</label>#}
+{#        {{ ef.age }}<span>{{ ef.age.errors.0 }}</span>#}
+{#    </div>#}
+{#    <div>#}
+{#        <label for="">薪水</label>#}
+{#        {{ ef.salary }}<span>{{ ef.salary.errors.0 }}</span>#}
+{#    </div>#}
+{#    <input value="subimit" type="submit">#}
+{##}
+{#</form>#}
+
+
+{#<h3>渲染方式3</h3>#}
+{#<form action="" method="post" novalidate>#}
+{#    {% csrf_token %}#}
+{#    {% for foo in ef %}#}
+{#        <div>#}
+{#        <label for="">{{ foo.label }}</label>#}
+{#        {{ foo }}<span>{{ foo.errors.0 }}</span>#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#<input value="submit" type="submit">#}
+{#</form>#}
+
+{#<h3>渲染方式3</h3>#}
+{##}
+{#<form action="" method="post" novalidate>#}
+{#    {% csrf_token %}#}
+{#    {% for field in ef %}#}
+{#    <div>#}
+{#        <label for="">{{ field.label }}</label>#}
+{#        {{ field }} <span>{{ field.errors.0 }}</span>#}
+{#    </div>#}
+{#    {% endfor %}#}
+{##}
+{#     <input type="submit" value="submit">#}
+{#</form>#}
+
+<h3>Ajax提交</h3>
+<form action="" method="post" novalidate>
+    {% csrf_token %}
+    {% for field in ef %}
+        <div>
+            <label for="">{{ field.label }}</label>
+            {{ field }}<span class="error"></span>
+        </div>
+
+    {% endfor %}
+    <input class="ajax_btn" type="button" value="submit">
+</form>
+
+<script>
+    $(".ajax_btn").click(function () {
+        $.ajax({
+            url: "",
+            type: "post",
+            data: {
+                "name": $("#id_name").val(),
+                "age": $("#id_age").val(),
+                "salary": $("#id_salary").val(),
+                csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()
+            },
+            success: function (res) {
+                console.log(res)
+                if (res.state) {
+                    console.log("添加成功")
+                } else {
+                    //清空的操作
+                    $("span.error").html("")
+                    $.each(res.errors, function (key, value) {
+                        console.log(key, value[0])
+                        $("#id_" + key).next().html(value[0])
+                    })
+                }
+            }
+        })
+    })
+</script>
+
+</body>
+</html>

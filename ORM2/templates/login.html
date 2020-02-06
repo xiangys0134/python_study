@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+</head>
+<body>
+
+
+<form>
+    {% csrf_token %}
+     用户名 <input type="text" class="user">
+     密码 <input type="text" class="pwd">
+     <input type="button" value="submit" class="login_btn"><span class="error"></span>
+</form>
+
+<script>
+    $(".login_btn").click(function () {
+        // 发送Ajax请求
+         $.ajax({
+             url:"/login/",
+             type:"post",
+             data:{
+                 user:$(".user").val(),
+                 pwd:$(".pwd").val(),
+                 csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+             },
+             success:function (res) {
+                 console.log(res);
+                 console.log(typeof res);
+                 if(res.user){
+                     location.href="/books/"
+                 }else{
+                     $('.error').html(res.msg).css("color","red");
+                     setTimeout(function () {
+                         $('.error').html('')
+                     },1000)
+                 };
+
+             }
+         })
+
+
+    })
+</script>
+
+
+</body>
+</html>
