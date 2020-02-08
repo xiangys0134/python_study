@@ -30,6 +30,7 @@ class Author(models.Model):
     name=models.CharField( max_length=32)
     age=models.IntegerField()
     #books=models.ManyToManyField("Book")
+    gender = models.IntegerField(choices=((1,"男"),(2,"女")),default=1)
     ad=models.OneToOneField("AuthorDetail",null=True,on_delete=models.CASCADE)
     def __str__(self):
         return self.name
