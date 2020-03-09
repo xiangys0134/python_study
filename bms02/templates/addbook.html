@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css/">
+    <script src="/static/jquery/3.4.1/jquery.js"></script>
+
+</head>
+<body>
+<h3>添加书籍</h3>
+<div class="row">
+    <div class="col-md-4 col-md-offset-2">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="">书籍名称</label>
+                <input class="form-control" type="text" name="title">
+
+            </div>
+
+            <div class="form-group">
+                <label for="">价格</label>
+                <input class="form-control" type="text" name="price">
+            </div>
+
+            <div class="form-group">
+                <label for="">出版时间</label>
+                <input class="form-control" type="date" name="pub_date">
+            </div>
+
+            <div class="form-group">
+                <label for="">作者</label>
+                <select class="form-control" name="authors_list" multiple>
+                    {% for author in author_list %}
+                        <option value="{{ author.id }}">{{ author.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="">出版社</label>
+                <select class="form-control" name="publish_id">
+                    {% for publish in publish_list %}
+                        <option value="{{ publish.id }}">{{ publish.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <input class="col-md-offset-10" type="submit" value="submit">
+
+        </form>
+    </div>
+</div>
+</body>
+</html>

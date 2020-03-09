@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<h3>添加员工</h3>
+{#<form action="" method="post">#}
+{#    {% csrf_token %}#}
+{#    <p>姓名<input type="text" name="name"></p>#}
+{#    <p>年龄<input type="text" name="age"></p>#}
+{#    <p>薪水<input type="text" name="salary"></p>#}
+{#    <input type="submit" value="submit">#}
+{#</form>#}
+
+
+<hr>
+{#<h3>渲染方式一</h3>#}
+{#<form action="" method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form.as_p }}#}
+{#    <input type="submit" value="submit">#}
+{#</form>#}
+
+{#<h3>渲染方式2</h3>#}
+{#<form action="" method="post">#}
+{#    {% csrf_token %}#}
+{#    <div>#}
+{#        <label for>姓名</label>#}
+{#        {{ form.name }}#}
+{#    </div>#}
+{#        <div>#}
+{#        <label for>年龄</label>#}
+{#        {{ form.age }}#}
+{#    </div>#}
+{#        <div>#}
+{#        <label for>薪水</label>#}
+{#        {{ form.salary }}#}
+{#    </div>#}
+{#    <input type="submit" value="submit">#}
+{#</form>#}
+
+{#<h3>渲染方式3</h3>#}
+{#<form action="" method="post" novalidate>#}
+{#    {% csrf_token %}#}
+{#    {% for field in form %}#}
+{#    <div>#}
+{#        <label for>{{ field.label }}</label>#}
+{#        {{ field }}<span>{{ field.errors.0 }}</span>#}
+{#    </div>#}
+{#    {% endfor %}#}
+{#    <input type="submit" value="submit">#}
+{#</form>#}
+
+<h3>ajax提交</h3>
+<form action="" method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+        <div>
+            <label for>{{ field.label }}</label>
+            {{ field }}<span>{{ field.errors.0 }}</span>
+        </div>
+    {% endfor %}
+    <input type="button" class="ajax_btn" value="submit">
+</form>
+
+<script>
+    $(".ajax_btn").click(function () {
+        $.ajax({
+            url:"",
+            type:"post",
+            data:{
+                name: $("#id_name").val(),
+                age: $("#id_age").val(),
+                salary: $("#id_salary").val(),
+                csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+            },
+            success:function (res) {
+                console.log(res)
+
+            }
+        })
+    })
+</script>
+
+</body>
+</html>

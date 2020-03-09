@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css/">
+    <script src="/static/jquery/3.4.1/jquery.js"></script>
+</head>
+<body>
+
+<h3>书籍列表</h3>
+{#<div class="row col-lg-1 col-md-offset-2" style="color: red">#}
+{#   <a href="/add/"><button class="btn btn-default">添加书籍</button></a>#}
+{#</div>#}
+
+<div class="row">
+
+    <div class="col-md-8 col-md-offset-2">
+        <a href="/add/">
+            <button class="btn btn-primary">添加书籍</button>
+        </a>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>书籍名称</th>
+                <th>价格</th>
+                <th>作者</th>
+                <th>出版社</th>
+                <th>出版日期</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for book in quertset %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.price }}</td>
+                    <td>
+                        {% for i in  book.authors.all %}
+                            {{ i.name }}
+                        {% endfor %}
+                    </td>
+                    <td>{{ book.publish }}</td>
+                    <td>{{ book.pub_date|date:"Y-m-d" }}</td>
+                    <td>
+                        <a href="/books/change/{{ book.id }}/">编辑</a>
+                        <a href="/books/delete/{{ book.id }}/">删除</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    $("h3").click(function () {
+        $(this).css("color", "red")
+    })
+</script>
+
+</body>
+</html>
