@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang=zh class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kerberos认证部署 &#8211; 会飞的鲫鱼</title>
+<meta name='robots' content='noindex,nofollow' />
+<link rel='dns-prefetch' href='//cdn.jsdelivr.net' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="会飞的鲫鱼 &raquo; Feed" href="https://blog.g6p.cn/feed" />
+<link rel="alternate" type="application/rss+xml" title="会飞的鲫鱼 &raquo; 评论Feed" href="https://blog.g6p.cn/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="会飞的鲫鱼 &raquo; Kerberos认证部署评论Feed" href="https://blog.g6p.cn/archives/552.html/feed" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/blog.g6p.cn\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.4.1"}};
+			/*! This file is auto-generated */
+			!function(e,a,t){var r,n,o,i,p=a.createElement("canvas"),s=p.getContext&&p.getContext("2d");function c(e,t){var a=String.fromCharCode;s.clearRect(0,0,p.width,p.height),s.fillText(a.apply(this,e),0,0);var r=p.toDataURL();return s.clearRect(0,0,p.width,p.height),s.fillText(a.apply(this,t),0,0),r===p.toDataURL()}function l(e){if(!s||!s.fillText)return!1;switch(s.textBaseline="top",s.font="600 32px Arial",e){case"flag":return!c([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])&&(!c([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!c([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]));case"emoji":return!c([55357,56424,55356,57342,8205,55358,56605,8205,55357,56424,55356,57340],[55357,56424,55356,57342,8203,55358,56605,8203,55357,56424,55356,57340])}return!1}function d(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(i=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},o=0;o<i.length;o++)t.supports[i[o]]=l(i[o]),t.supports.everything=t.supports.everything&&t.supports[i[o]],"flag"!==i[o]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[i[o]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(r=t.source||{}).concatemoji?d(r.concatemoji):r.wpemoji&&r.twemoji&&(d(r.twemoji),d(r.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://blog.g6p.cn/wp-includes/css/dist/block-library/style.min.css?ver=5.4.1' type='text/css' media='all' />
+<link rel='stylesheet' id='dashicons-css'  href='https://blog.g6p.cn/wp-includes/css/dashicons.min.css?ver=5.4.1' type='text/css' media='all' />
+<link rel='stylesheet' id='post-views-counter-frontend-css'  href='https://blog.g6p.cn/wp-content/plugins/post-views-counter/css/frontend.css?ver=1.3.1' type='text/css' media='all' />
+<link rel='stylesheet' id='prism-theme-default-css'  href='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/themes/prism.css?ver=1.15.0' type='text/css' media='all' />
+<link rel='stylesheet' id='prism-plugin-toolbar-css'  href='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/plugins/toolbar/prism-toolbar.css?ver=1.15.0' type='text/css' media='all' />
+<link rel='stylesheet' id='prism-plugin-line-numbers-css'  href='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/plugins/line-numbers/prism-line-numbers.css?ver=1.15.0' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://blog.g6p.cn/wp-content/themes/mynote/assets/css/bootstrap.min.css?ver=4.1.0' type='text/css' media='all' />
+<link rel='stylesheet' id='fontawesome-css'  href='https://blog.g6p.cn/wp-content/themes/mynote/assets/css/fontawesome-all.min.css?ver=5.1.0' type='text/css' media='all' />
+<link rel='stylesheet' id='mynote-font-roboto-css'  href='https://fonts.googleapis.com/css?family=Roboto%3A300%2C400&#038;ver=1.0' type='text/css' media='all' />
+<link rel='stylesheet' id='mynote-css'  href='https://blog.g6p.cn/wp-content/themes/mynote/style.css?ver=1.4.1' type='text/css' media='all' />
+<script type='text/javascript' src='https://blog.g6p.cn/wp-includes/js/jquery/jquery.js?ver=1.12.4-wp'></script>
+<script type='text/javascript' src='https://blog.g6p.cn/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<script type='text/javascript' src='https://blog.g6p.cn/wp-content/themes/mynote/assets/js/bootstrap.bundle.min.js?ver=4.1.0'></script>
+<link rel='https://api.w.org/' href='https://blog.g6p.cn/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://blog.g6p.cn/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://blog.g6p.cn/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='CentOS7安装hadoop(分布式)' href='https://blog.g6p.cn/archives/544.html' />
+<meta name="generator" content="WordPress 5.4.1" />
+<link rel="canonical" href="https://blog.g6p.cn/archives/552.html" />
+<link rel='shortlink' href='https://blog.g6p.cn/?p=552' />
+<link rel="alternate" type="application/json+oembed" href="https://blog.g6p.cn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fblog.g6p.cn%2Farchives%2F552.html" />
+<link rel="alternate" type="text/xml+oembed" href="https://blog.g6p.cn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fblog.g6p.cn%2Farchives%2F552.html&#038;format=xml" />
+<!-- Analytics by WP-Statistics v12.6.13 - https://wp-statistics.com/ -->
+<style id="mynote-customizer">
+@media (max-width: 768px) {
+.footer-columns { text-align: center !important; }
+.footer-columns .footer-column-left { text-align: center !important; }
+}
+.scroll-area { display: block !important; }
+body.menu-is-collapsed .header { background: rgba(20, 25, 29, 1) !important; }
+
+</style>
+</head>
+<body data-rsssl=1 class="post-template-default single single-post postid-552 single-format-standard kerberos">
+	<div class="wrapper">
+		<header class="header clear" role="banner">
+			<div class="container">
+				<nav class="navbar navbar-expand-lg navbar-dark " role="navigation">
+					
+											<div id="mynote-nav-bar" class="collapse navbar-collapse"><ul id="menu-ops" class="navbar-nav mr-auto"><li  id="menu-item-84"class="nav-item dropdown"><a href="https://blog.g6p.cn/archives/category/windows" class="nav-link dropdown-toggle" data-toggle="dropdown">Windows</a><div class="dropdown-menu"><a href="https://blog.g6p.cn/archives/category/windows/windows%e6%bf%80%e6%b4%bb" class="dropdown-item">WINDOWS激活</a><a href="https://blog.g6p.cn/archives/category/windows/windows%e7%bb%84%e4%bb%b6" class="dropdown-item">Windows组件</a></div></li><li  id="menu-item-83"class="nav-item dropdown"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6" class="nav-link dropdown-toggle" data-toggle="dropdown">Linux组件</a><div class="dropdown-menu"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/ansible" class="dropdown-item">Ansible</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/svn" class="dropdown-item">SVN</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/gitlab" class="dropdown-item">GitLab</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/samba" class="dropdown-item">Samba</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/nfs" class="dropdown-item">NFS</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/glusterfs" class="dropdown-item">Glusterfs</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/fastdfs" class="dropdown-item">Fastdfs</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/vsftp" class="dropdown-item">Vsftp</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/lvs" class="dropdown-item">LVS</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/keepalived" class="dropdown-item">Keepalived</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/haproxy" class="dropdown-item">Haproxy</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/nginx" class="dropdown-item">Nginx</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/mysql" class="dropdown-item">MySQL</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/oracle" class="dropdown-item">Oracle</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/nodejs" class="dropdown-item">Nodejs</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/php" class="dropdown-item">PHP</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/tomcat" class="dropdown-item">Tomcat</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/redis" class="dropdown-item">Redis</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/mongodb" class="dropdown-item">MongoDB</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/rpmbuild" class="dropdown-item">rpmbuild</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/jenkins" class="dropdown-item">Jenkins</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/rsync" class="dropdown-item">Rsync</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/supervisor" class="dropdown-item">Supervisor</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/zabbix" class="dropdown-item">Zabbix</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/%e6%97%a5%e5%bf%97%e6%94%b6%e9%9b%86" class="dropdown-item">日志收集</a><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/firewall-cmd" class="dropdown-item">Firewall-cmd</a></div></li><li  id="menu-item-78"class="nav-item dropdown"><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae" class="nav-link dropdown-toggle" data-toggle="dropdown">大数据</a><div class="dropdown-menu"><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/zookeeper" class="dropdown-item">zookeeper</a><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/kafka" class="dropdown-item">kafka</a><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/hadoop" class="dropdown-item">Hadoop</a><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/cdh" class="dropdown-item">CDH</a><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/spark" class="dropdown-item">spark</a><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/kerberos" class="dropdown-item">Kerberos</a></div></li><li  id="menu-item-82"class="nav-item dropdown"><a href="https://blog.g6p.cn/archives/category/%e8%99%9a%e6%8b%9f%e5%8c%96" class="nav-link dropdown-toggle" data-toggle="dropdown">虚拟化</a><div class="dropdown-menu"><a href="https://blog.g6p.cn/archives/category/%e8%99%9a%e6%8b%9f%e5%8c%96/citrix-virtual-apps" class="dropdown-item">Citrix Virtual Apps</a><a href="https://blog.g6p.cn/archives/category/%e8%99%9a%e6%8b%9f%e5%8c%96/vsphere-hypervisor-esxi" class="dropdown-item">vSphere Hypervisor ESXi</a></div></li><li  id="menu-item-79"class="nav-item dropdown"><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1" class="nav-link dropdown-toggle" data-toggle="dropdown">微服务</a><div class="dropdown-menu"><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1/docker" class="dropdown-item">Docker</a><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1/grafana" class="dropdown-item">Grafana</a><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1/prometheus" class="dropdown-item">Prometheus</a><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1/kubernetes" class="dropdown-item">Kubernetes</a></div></li><li  id="menu-item-80"class="nav-item"><a href="https://blog.g6p.cn/archives/category/%e7%b3%bb%e7%bb%9f%e6%9e%b6%e6%9e%84" class="nav-link">系统架构</a></li><li  id="menu-item-81"class="nav-item dropdown"><a href="https://blog.g6p.cn/archives/category/%e7%bc%96%e7%a8%8b%e8%af%ad%e8%a8%80" class="nav-link dropdown-toggle" data-toggle="dropdown">编程语言</a><div class="dropdown-menu"><a href="https://blog.g6p.cn/archives/category/%e7%bc%96%e7%a8%8b%e8%af%ad%e8%a8%80/python" class="dropdown-item">Python</a><a href="https://blog.g6p.cn/archives/category/%e7%bc%96%e7%a8%8b%e8%af%ad%e8%a8%80/shell" class="dropdown-item">Shell</a><a href="https://blog.g6p.cn/archives/category/%e7%bc%96%e7%a8%8b%e8%af%ad%e8%a8%80/%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90" class="dropdown-item">持续集成</a></div></li><li  id="menu-item-87"class="nav-item dropdown"><a href="https://blog.g6p.cn/archives/category/%e5%ae%89%e5%85%a8" class="nav-link dropdown-toggle" data-toggle="dropdown">安全</a><div class="dropdown-menu"><a href="https://blog.g6p.cn/archives/category/%e5%ae%89%e5%85%a8/%e5%a0%a1%e5%9e%92%e6%9c%ba" class="dropdown-item">堡垒机</a><a href="https://blog.g6p.cn/archives/category/%e5%ae%89%e5%85%a8/%e9%98%b2%e7%81%ab%e5%a2%99" class="dropdown-item">防火墙</a><a href="https://blog.g6p.cn/archives/category/%e5%ae%89%e5%85%a8/ddos%e9%98%b2%e5%be%a1" class="dropdown-item">DDOS防御</a></div></li><li  id="menu-item-89"class="nav-item dropdown"><a href="https://blog.g6p.cn/archives/category/issues" class="nav-link dropdown-toggle" data-toggle="dropdown">issues</a><div class="dropdown-menu"><a href="https://blog.g6p.cn/archives/category/issues/%e6%95%85%e9%9a%9c%e6%80%bb%e7%bb%93" class="dropdown-item">故障总结</a></div></li></ul></div>					
+					<div class="search-bar">
+						
+<form id="search-form" class="search" method="get" action="https://blog.g6p.cn" role="search" autocomplete="off">
+	<input type="text" name="s" class="search-input" placeholder="输入关键字后按下 Enter 键进行搜寻">
+	<span class="search-icon" onclick="document.getElementById('search-form').submit();"><i class="fas fa-search"></i></span>
+</form>
+
+
+					</div>
+					
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mynote-nav-bar" aria-controls="mynote-nav-bar" aria-expanded="false" aria-label="开启/关闭导览列">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+				</nav>
+			</div><!-- .container -->
+		</header>
+
+
+		
+
+		<div class="single-post-title-bar clear" role="banner">
+			<div class="container">
+				<nav class="navbar navbar-expand-lg navbar-dark" role="navigation">
+					<a class="navbar-brand" href="https://blog.g6p.cn"></a>
+					<div id="progress-title"></div>
+				</nav>
+			</div>
+			<div class="progress-wrapper">
+				<div class="progress-label"></div>
+				<progress></progress>
+			</div>
+		</div>
+	
+<div class="data-schema is-single" itemscope itemtype="http://schema.org/Article">
+											<nav class="breadcrumb">
+			<div class="container">
+				<ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
+					<li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+						<a href="https://blog.g6p.cn" itemprop="item">
+							<span itemprop="name"><i class="fas fa-globe"></i><span class="sr-only">首页</span></span>
+						</a>
+						<meta itemprop="position" content="1">
+					</li>
+															<li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+						<span itemprop="name">Kerberos认证部署</span>
+						<meta itemprop="item" content="https://blog.g6p.cn/archives/552.html">
+						<meta itemprop="position" content="2">
+					</li>
+				</ul>
+			</div>
+		</nav>
+		
+			<div class="single-post-header">
+				<div class="container">
+
+					<h1 id="post-title" itemprop="headline">Kerberos认证部署</h1>
+					<div class="post-mynote-buttons">
+
+															<div class="btn-group column-control">
+			<div class="btn-counter text-only active" data-target="#aside-container" role="button">		
+				<div class="btn"><i class="fas fa-columns"></i></div>
+			</div>
+			<div class="btn-counter text-only" data-target="#sidebar" role="button">		
+				<div class="btn"><i class="fas fa-list-ul"></i></div>
+			</div> 
+		</div>
+							
+												
+			<a href="https://blog.g6p.cn/archives/552.html#comments" class="button-like-link">
+				<div class="btn-counter">
+					<div class="btn">
+						<i class="fas fa-comment-dots"></i>
+					</div>
+					<div class="count-box">0</div>
+				</div>
+			</a>
+							</div><!-- .post-mynote-buttons -->
+
+											<div class="post-meta">
+							<div class="author-posted-date"><img src="https://secure.gravatar.com/avatar/a9dc29b07751351d08aac7cb611dc6a2?s=40&#038;d=mm&#038;r=g" class="rounded-circle poster-avatar" align="middle"> <a href="https://blog.g6p.cn/archives/author/xiangys0134" title="written 四月 30, 20206:53 上午" class="author-link">xiangys0134</a> <time itemprop="datePublished" datetime="2020-04-30T06:53:44+00:00">发布于 2周前</time></div>						</div>
+					
+				</div><!-- .container -->
+			</div><!-- .single-post-header -->
+
+			
+	<div class="container">
+		<div class="row row-layout-choice-post">
+			<main id="main-container" class="col-lg-8 col-md-8 col-sm-12" role="main">
+
+				
+					
+						
+						<article id="post-552" class="markdown-body post-552 post type-post status-publish format-standard hentry category-kerberos">
+
+							
+							<div itemprop="articleBody">
+								<h4>一、准备环境</h4>
+<pre><code class="language-shell line-numbers">[root@poc1 ~]# cat /etc/hosts
+192.168.0.126 poc1.xuncetehch.com poc1
+192.168.0.127 poc2.xuncetehch.com poc2
+192.168.0.128 poc3.xuncetehch.com poc3
+</code></pre>
+<h4>二、软件安装</h4>
+<h5>2.1服务端安装</h5>
+<pre><code class="language-shell line-numbers">[root@poc1 ~]# yum install krb5-server krb5-libs krb5-auth-dialog krb5-workstation -y
+</code></pre>
+<h5>2.2编辑配置文件</h5>
+<pre><code class="language-shell line-numbers">[root@poc1 ~]# vim /etc/krb5.conf
+includedir /etc/krb5.conf.d/
+
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+ dns_lookup_realm = false
+ ticket_lifetime = 24h
+ renew_lifetime = 7d
+ forwardable = true
+ default_tgs_enctypes = aes256-cts
+ default_tkt_enctypes = aes256-cts
+ permitted_enctypes = aes256-cts
+ rdns = false
+ pkinit_anchors = /etc/pki/tls/certs/ca-bundle.crt
+# default_realm = EXAMPLE.COM
+ default_realm = XUNCETECH.COM
+ default_ccache_name = KEYRING:persistent:%{uid}
+ kdc_timeout = 3000
+
+[realms]
+ XUNCETECH.COM = {
+  kdc = poc1.xuncetehch.com
+  admin_server = poc1.xuncetehch.com
+ }
+
+[domain_realm]
+ .xuncetech.com = XUNCETECH.COM
+  xuncetech.com = XUNCETECH.COM
+
+</code></pre>
+<h5>2.3配置kdc</h5>
+<pre><code class="language-shell line-numbers">[root@poc1 ~]# vim /var/kerberos/krb5kdc/kdc.conf
+[kdcdefaults]
+ kdc_ports = 88
+ kdc_tcp_ports = 88
+
+[realms]
+ XUNCETECH.COM = {
+  #master_key_type = aes256-cts
+  acl_file = /var/kerberos/krb5kdc/kadm5.acl
+  dict_file = /usr/share/dict/words
+  admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
+  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+ }
+
+</code></pre>
+<h5>2.4客户端安装</h5>
+<pre><code class="language-shell line-numbers"># yum install krb5-devel krb5-workstation -y
+</code></pre>
+<h5>2.5服务端krb5.conf分别拷贝至客户端</h5>
+<pre><code class="language-shell line-numbers"># scp /etc/krb5.conf opadm@192.168.0.127:/tmp/        //scp至远端客户端
+# scp /etc/krb5.conf opadm@192.168.0.128:/tmp/        //scp至远端客户端
+
+#如果有root权限可直接拷贝至对应目录
+# cp /tmp/krb5.conf /etc/
+</code></pre>
+<h4>三、配置节点添加ACL权限</h4>
+<pre><code class="language-shell line-numbers">[root@poc1 ~]# vim /var/kerberos/krb5kdc/kadm5.acl            //只需要在服务端做配置
+*/admin@XUNCETECH.COM *
+</code></pre>
+<h4>四、服务初始化</h4>
+<pre><code class="language-shell line-numbers">[root@poc1 ~]# kdb5_util create -s -r XUNCETECH.COM        //直接回车创建
+[root@poc1 ~]# ll /var/kerberos/krb5kdc        //生成如下6个文件则初始化正确
+总用量 24
+-rw------- 1 root root 24 8月 13 16:46 kadm5.acl
+-rw------- 1 root root 453 8月 13 16:44 kdc.conf
+-rw------- 1 root root 8192 8月 13 16:47 principal
+-rw------- 1 root root 8192 8月 13 16:47 principal.kadm5
+-rw------- 1 root root 0 8月 13 16:47 principal.kadm5.lock
+-rw------- 1 root root 0 8月 13 16:47 principal.ok
+</code></pre>
+<h4>五、启动服务</h4>
+<pre><code class="language-shell line-numbers">[root@poc1 ~]# systemctl start krb5kdc.service
+[root@poc1 ~]# systemctl start kadmin.service
+
+开机自启动
+[root@poc1 ~]# systemctl enable krb5kdc.service
+[root@poc1 ~]# systemctl enable kadmin.service
+</code></pre>
+<h4>六、创建管理账号</h4>
+<pre><code class="language-shell line-numbers">执行命令，这里密码是6zI2MfUcIl7
+[root@cdh-master ~]# kadmin.local -q "addprinc admin/admin"     //可以通过listprincs查询
+
+#测试管理账号(slave端执行)
+[root@poc2 cloudera-scm-agent]# kinit admin/admin@XUNCETECH.COM
+</code></pre>
+<h4>七、KDC添加Cloudera Manager管理员账号</h4>
+<ul>
+<li>以下操作仅限于CDH集群的配置</li>
+</ul>
+<pre><code class="language-shell line-numbers">这里密码配置是6zI2MfUcIl7
+[root@poc1 ~]# kadmin.local -q "addprinc cloudera-scm/admin@XUNCETECH.COM"
+</code></pre>
+<h4>八、启用 Kerberos</h4>
+<ul>
+<li>
+<p>如果是安装了CDH集群的话，将第七步配置的kerberos的用户名密码进行认证并启动kerberos</p>
+</li>
+<li>
+<p>CDH在启动kerberos后会创建对应的用户</p>
+</li>
+</ul>
+<h4>九、生成kerberos用户</h4>
+<pre><code class="language-shell line-numbers">Authenticating as principal root/admin@XUNCETECH.COM with password.
+kadmin.local:
+addprinc -randkey hdfs/xiangys0134-haddop01
+addprinc -randkey http/xiangys0134-haddop01
+addprinc -randkey yarn/xiangys0134-haddop01
+addprinc -randkey hdfs/xiangys0134-haddop02
+addprinc -randkey http/xiangys0134-haddop02
+addprinc -randkey yarn/xiangys0134-haddop02
+addprinc -randkey hdfs/xiangys0134-haddop03
+addprinc -randkey http/xiangys0134-haddop03
+addprinc -randkey yarn/xiangys0134-haddop03
+</code></pre>
+<h4>十、查看认证信息</h4>
+<pre><code class="language-shell line-numbers">[root@node2 opadm]# kadmin.local
+kadmin.local: listprincs
+
+[root@xiangys0134-haddop03 krb]# kinit -kt admin.keytab hdfs/xiangys0134-haddop01@XUNCETECH.COM    //通过key进行认证
+[root@xiangys0134-haddop03 krb]# kinit cloudera-scm/admin@XUNCETECH.COM        //通过用户名进行认证
+[root@xiangys0134-haddop03 krb]# klist         //客户端查看当前的认证用户
+Ticket cache: KEYRING:persistent:0:0
+Default principal: cloudera-scm/admin@XUNCETECH.COM
+
+Valid starting Expires Service principal
+2020-04-21T09:50:18 2020-04-22T09:50:18 krbtgt/XUNCETECH.COM@XUNCETECH.COM
+</code></pre>
+<h4>十一、导出keytab</h4>
+<pre><code class="language-shell line-numbers">[root@xiangys0134-cdh01 test]# kadmin.local
+xst -k admin.keytab hdfs/xiangys0134-haddop01@XUNCETECH.COM
+xst -k admin.keytab hdfs/xiangys0134-haddop02@XUNCETECH.COM
+xst -k admin.keytab hdfs/xiangys0134-haddop03@XUNCETECH.COM
+xst -k admin.keytab http/xiangys0134-haddop01@XUNCETECH.COM
+xst -k admin.keytab http/xiangys0134-haddop02@XUNCETECH.COM
+xst -k admin.keytab http/xiangys0134-haddop03@XUNCETECH.COM
+xst -k admin.keytab yarn/xiangys0134-haddop01@XUNCETECH.COM
+xst -k admin.keytab yarn/xiangys0134-haddop02@XUNCETECH.COM
+xst -k admin.keytab yarn/xiangys0134-haddop03@XUNCETECH.COM
+</code></pre>
+<h4>十二、查看keytab的用户</h4>
+<pre><code class="language-shell line-numbers">#如果那到一个陌生的keytab文件可以通过以下方法查询具体用户
+[root@xiangys0134-haddop02 krb]# klist -kte admin.keytab
+Keytab name: FILE:admin.keytab
+KVNO Timestamp Principal
+---- ------------------- ------------------------------------------------------
+   2 2020-04-20T17:11:34 hdfs/xiangys0134-haddop01@XUNCETECH.COM (aes256-cts-hmac-sha1-96) 
+   2 2020-04-20T17:11:34 hdfs/xiangys0134-haddop01@XUNCETECH.COM (aes128-cts-hmac-sha1-96) 
+   2 2020-04-20T17:11:34 hdfs/xiangys0134-haddop01@XUNCETECH.COM (des3-cbc-sha1) 
+   2 2020-04-20T17:11:34 hdfs/xiangys0134-haddop01@XUNCETECH.COM (arcfour-hmac) 
+   2 2020-04-20T17:11:34 hdfs/xiangys0134-haddop01@XUNCETECH.COM (camellia256-cts-cmac) 
+   2 2020-04-20T17:11:34 hdfs/xiangys0134-haddop01@XUNCETECH.COM (camellia128-cts-cmac)
+...
+</code></pre>
+<div class="post-views post-552 entry-meta">
+			<span class="post-views-icon dashicons dashicons-chart-bar"></span>
+			<span class="post-views-label">Post Views: </span>
+			<span class="post-views-count">17</span>
+			</div>
+															</div>
+
+						</article>
+
+						<section class="modified-date" itemprop="dateModified" content="2020-04-30T06:53:44+00:00">
+							最后修改日期:四月 30, 2020						</section>
+
+						<section class="tags">
+													</section>
+
+																<h3 class="section-title">作者</h3>
+			<aside class="author-card" itemscope itemprop="author" itemtype="http://schema.org/Person">
+				<div class="author-avatar">
+					<img src="https://secure.gravatar.com/avatar/a9dc29b07751351d08aac7cb611dc6a2?s=96&#038;d=mm&#038;r=g" class="rounded-circle" itemprop="image">
+				</div>
+				<div class="author-info">
+					<div class="author-title">
+						<a href="https://blog.g6p.cn/archives/author/xiangys0134" itemprop="name">
+							xiangys0134						</a>
+					</div>
+					<div class="author-description" itemprop="description">  
+											</div>
+				</div>
+			</aside>
+								
+													
+<div id="comments" class="discussion-wrapper">
+	<h3 class="section-title">留言</h3>
+	<div class="discussion-timeline">
+									<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="section-title">撰写回覆或留言 <small><a rel="nofollow" id="cancel-comment-reply-link" href="/archives/552.html#respond" style="display:none;">取消回复</a></small></h3><form action="https://blog.g6p.cn/wp-comments-post.php" method="post" id="commentform" class="comment-form"><p class="comment-notes">发布留言必须填写的电子邮件地址不会公开。</p><div class="form-row">
+
+		<div class="col-sm-6 my-1">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text"><i class="fas fa-user"></i></div>
+				</div>
+				<input id="author" class="form-control" placeholder="留言者姓名" name="author" type="text" value="" maxlength="245" />
+			</div>
+		</div>
+	
+
+		<div class="col-sm-6 my-1">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text"><i class="fas fa-envelope"></i></div>
+				</div>
+				<input id="email" class="form-control" placeholder="电子邮件地址" name="email" type="text" value="" maxlength="100" />
+			</div>
+		</div>
+	
+
+		<div class="col-sm-12 my-1">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text"><i class="fas fa-globe"></i></div>
+				</div>
+				<input id="url" class="form-control" placeholder="网站" name="url" type="text" value="" maxlength="200" />
+			</div>
+		</div>
+	
+</div>
+
+		<div class="form-row">
+			<div class="col-sm-12 my-1">
+				<textarea id="comment" name="comment" class="form-control" aria-required="true"></textarea>
+			</div>
+		</div>
+	<p class="form-submit"><input name="submit" type="submit" id="submit" class="btn btn-green my-1" value="送出留言" /> <input type='hidden' name='comment_post_ID' value='552' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p></form>	</div><!-- #respond -->
+		</div>
+</div>
+
+												
+					
+							</main>
+
+							<aside id="aside-container" class="col-lg-4 col-md-4 col-sm-12" role="complementary">
+					
+	<div id="sidebar" class="sidebar">
+		<section id="search-2" class="widget widget_search">
+<form id="search-form" class="search" method="get" action="https://blog.g6p.cn" role="search" autocomplete="off">
+	<input type="text" name="s" class="search-input" placeholder="输入关键字后按下 Enter 键进行搜寻">
+	<span class="search-icon" onclick="document.getElementById('search-form').submit();"><i class="fas fa-search"></i></span>
+</form>
+
+
+</section>		<section id="recent-posts-2" class="widget widget_recent_entries">		<h2 class="widget-title">近期文章</h2>		<ul>
+											<li>
+					<a href="https://blog.g6p.cn/archives/552.html" aria-current="page">Kerberos认证部署</a>
+									</li>
+											<li>
+					<a href="https://blog.g6p.cn/archives/544.html">CentOS7安装hadoop(分布式)</a>
+									</li>
+											<li>
+					<a href="https://blog.g6p.cn/archives/539.html">spark单机安装</a>
+									</li>
+											<li>
+					<a href="https://blog.g6p.cn/archives/533.html">jenkins流水线并行执行任务</a>
+									</li>
+											<li>
+					<a href="https://blog.g6p.cn/archives/522.html">MySQL数据库数据误删恢复</a>
+									</li>
+					</ul>
+		</section><section id="custom_html-2" class="widget_text widget widget_custom_html"><div class="textwidget custom-html-widget"></div></section><section id="recent-comments-2" class="widget widget_recent_comments"><h2 class="widget-title">近期评论</h2><ul id="recentcomments"></ul></section><section id="archives-2" class="widget widget_archive"><h2 class="widget-title">文章归档</h2>		<ul>
+				<li><a href='https://blog.g6p.cn/archives/date/2020/04'>2020年四月</a></li>
+	<li><a href='https://blog.g6p.cn/archives/date/2020/03'>2020年三月</a></li>
+	<li><a href='https://blog.g6p.cn/archives/date/2019/12'>2019年十二月</a></li>
+	<li><a href='https://blog.g6p.cn/archives/date/2019/11'>2019年十一月</a></li>
+	<li><a href='https://blog.g6p.cn/archives/date/2019/10'>2019年十月</a></li>
+	<li><a href='https://blog.g6p.cn/archives/date/2019/09'>2019年九月</a></li>
+		</ul>
+			</section><section id="categories-2" class="widget widget_categories"><h2 class="widget-title">分类目录</h2>		<ul>
+				<li class="cat-item cat-item-23"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/ansible">Ansible</a>
+</li>
+	<li class="cat-item cat-item-34"><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/cdh">CDH</a>
+</li>
+	<li class="cat-item cat-item-40"><a href="https://blog.g6p.cn/archives/category/%e8%99%9a%e6%8b%9f%e5%8c%96/citrix-virtual-apps">Citrix Virtual Apps</a>
+</li>
+	<li class="cat-item cat-item-59"><a href="https://blog.g6p.cn/archives/category/%e5%ae%89%e5%85%a8/ddos%e9%98%b2%e5%be%a1">DDOS防御</a>
+</li>
+	<li class="cat-item cat-item-36"><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1/docker">Docker</a>
+</li>
+	<li class="cat-item cat-item-68"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/fastdfs">Fastdfs</a>
+</li>
+	<li class="cat-item cat-item-31"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/firewall-cmd">Firewall-cmd</a>
+</li>
+	<li class="cat-item cat-item-16"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/gitlab">GitLab</a>
+</li>
+	<li class="cat-item cat-item-24"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/glusterfs">Glusterfs</a>
+</li>
+	<li class="cat-item cat-item-39"><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1/grafana">Grafana</a>
+</li>
+	<li class="cat-item cat-item-35"><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/hadoop">Hadoop</a>
+</li>
+	<li class="cat-item cat-item-28"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/haproxy">Haproxy</a>
+</li>
+	<li class="cat-item cat-item-17"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/jenkins">Jenkins</a>
+</li>
+	<li class="cat-item cat-item-65"><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/kafka">kafka</a>
+</li>
+	<li class="cat-item cat-item-19"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/keepalived">Keepalived</a>
+</li>
+	<li class="cat-item cat-item-73"><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/kerberos">Kerberos</a>
+</li>
+	<li class="cat-item cat-item-37"><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1/kubernetes">Kubernetes</a>
+</li>
+	<li class="cat-item cat-item-18"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/lvs">LVS</a>
+</li>
+	<li class="cat-item cat-item-70"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/mongodb">MongoDB</a>
+</li>
+	<li class="cat-item cat-item-12"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/mysql">MySQL</a>
+</li>
+	<li class="cat-item cat-item-20"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/nfs">NFS</a>
+</li>
+	<li class="cat-item cat-item-9"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/nginx">Nginx</a>
+</li>
+	<li class="cat-item cat-item-15"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/nodejs">Nodejs</a>
+</li>
+	<li class="cat-item cat-item-69"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/oracle">Oracle</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/php">PHP</a>
+</li>
+	<li class="cat-item cat-item-38"><a href="https://blog.g6p.cn/archives/category/%e5%be%ae%e6%9c%8d%e5%8a%a1/prometheus">Prometheus</a>
+</li>
+	<li class="cat-item cat-item-54"><a href="https://blog.g6p.cn/archives/category/%e7%bc%96%e7%a8%8b%e8%af%ad%e8%a8%80/python">Python</a>
+</li>
+	<li class="cat-item cat-item-13"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/redis">Redis</a>
+</li>
+	<li class="cat-item cat-item-32"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/rpmbuild">rpmbuild</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/rsync">Rsync</a>
+</li>
+	<li class="cat-item cat-item-29"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/samba">Samba</a>
+</li>
+	<li class="cat-item cat-item-55"><a href="https://blog.g6p.cn/archives/category/%e7%bc%96%e7%a8%8b%e8%af%ad%e8%a8%80/shell">Shell</a>
+</li>
+	<li class="cat-item cat-item-72"><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/spark">spark</a>
+</li>
+	<li class="cat-item cat-item-25"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/supervisor">Supervisor</a>
+</li>
+	<li class="cat-item cat-item-30"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/svn">SVN</a>
+</li>
+	<li class="cat-item cat-item-10"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/tomcat">Tomcat</a>
+</li>
+	<li class="cat-item cat-item-22"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/vsftp">Vsftp</a>
+</li>
+	<li class="cat-item cat-item-41"><a href="https://blog.g6p.cn/archives/category/%e8%99%9a%e6%8b%9f%e5%8c%96/vsphere-hypervisor-esxi">vSphere Hypervisor ESXi</a>
+</li>
+	<li class="cat-item cat-item-2"><a href="https://blog.g6p.cn/archives/category/windows">Windows</a>
+</li>
+	<li class="cat-item cat-item-33"><a href="https://blog.g6p.cn/archives/category/windows/windows%e6%bf%80%e6%b4%bb">WINDOWS激活</a>
+</li>
+	<li class="cat-item cat-item-63"><a href="https://blog.g6p.cn/archives/category/windows/windows%e7%bb%84%e4%bb%b6">Windows组件</a>
+</li>
+	<li class="cat-item cat-item-14"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/zabbix">Zabbix</a>
+</li>
+	<li class="cat-item cat-item-64"><a href="https://blog.g6p.cn/archives/category/%e5%a4%a7%e6%95%b0%e6%8d%ae/zookeeper">zookeeper</a>
+</li>
+	<li class="cat-item cat-item-58"><a href="https://blog.g6p.cn/archives/category/%e5%ae%89%e5%85%a8/%e5%a0%a1%e5%9e%92%e6%9c%ba">堡垒机</a>
+</li>
+	<li class="cat-item cat-item-67"><a href="https://blog.g6p.cn/archives/category/%e7%bc%96%e7%a8%8b%e8%af%ad%e8%a8%80/%e6%8c%81%e7%bb%ad%e9%9b%86%e6%88%90">持续集成</a>
+</li>
+	<li class="cat-item cat-item-61"><a href="https://blog.g6p.cn/archives/category/issues/%e6%95%85%e9%9a%9c%e6%80%bb%e7%bb%93">故障总结</a>
+</li>
+	<li class="cat-item cat-item-66"><a href="https://blog.g6p.cn/archives/category/linux%e7%bb%84%e4%bb%b6/%e6%97%a5%e5%bf%97%e6%94%b6%e9%9b%86">日志收集</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://blog.g6p.cn/archives/category/%e7%b3%bb%e7%bb%9f%e6%9e%b6%e6%9e%84">系统架构</a>
+</li>
+	<li class="cat-item cat-item-62"><a href="https://blog.g6p.cn/archives/category/%e5%ae%89%e5%85%a8/%e9%98%b2%e7%81%ab%e5%a2%99">防火墙</a>
+</li>
+		</ul>
+			</section><section id="meta-2" class="widget widget_meta"><h2 class="widget-title">功能</h2>			<ul>
+						<li><a href="https://blog.g6p.cn/wp-login.php">登录</a></li>
+			<li><a href="https://blog.g6p.cn/feed">项目feed</a></li>
+			<li><a href="https://blog.g6p.cn/comments/feed">评论feed</a></li>
+			<li><a href="https://cn.wordpress.org/">WordPress.org</a></li>			</ul>
+			</section>	</div>
+
+	<div id="sidebar-sticky" class="sidebar sticky-top">
+		<nav id="toc" class="toc" role="navigation"></nav>
+	</div>
+				</aside>
+			
+		</div><!-- .row -->
+		
+	<nav class="navigation post-navigation" role="navigation" aria-label="文章">
+		<h2 class="screen-reader-text">文章导航</h2>
+		<div class="nav-links"><div class="nav-previous"><a href="https://blog.g6p.cn/archives/544.html" rel="prev"><i class="fas fa-angle-left"></i> <span class="screen-reader-text">上一篇文章</span> CentOS7安装hadoop(分布式)</a></div></div>
+	</nav>	</div><!-- .container -->
+</div><!-- .data-schema -->
+
+
+			<footer class="footer" role="contentinfo">
+				
+				<div class="container footer-columns">
+					<div class="footer-column-left">
+						<div>著作权 &copy; 2020 <strong><a href="https://blog.g6p.cn">会飞的鲫鱼</a></strong>. 保留一切权利。 本站采用的布景主题为 <a href="https://terryl.in/" target="_blank">Mynote</a>. </div>
+						<div></div>
+					</div>
+					<div class="footer-column-right">
+											</div>
+				</div>
+
+			</footer>
+		</div><!-- .wrapper -->
+			<script>
+
+	jQuery( document ).ready(function( $ ) {
+		const win = $( window );
+		const doc = $( document );
+		const progressBar = $( 'progress' );
+		const progressLabel = $( '.progress-label' );
+		const setValue = () => win.scrollTop();
+		const setMax = () => doc.height() - win.height();
+		const setPercent = () => Math.round( win.scrollTop() / (doc.height() - win.height()) * 100 );
+		const pageTitle = $( '#post-title' );
+		const pageTitleTop = pageTitle.offset().top;
+		const progressBarContainer = $( '.single-post-title-bar' );
+		const headerNavBrand = $( '.header .navbar-brand' );
+		const progressTitle = $( '#progress-title' );
+		const headerBarContainer = $( '.header .container' );
+
+		progressLabel.text( setPercent() + '%' );
+		progressBar.attr(
+			{
+				value: setValue(),
+				max: setMax() 
+			}
+		);
+
+		doc.on( 'scroll', () => {
+			progressLabel.text( setPercent() + '%' );
+			progressBar.attr(
+				{
+					value: setValue()
+				} 
+			);
+
+			if ( doc.scrollTop() > headerNavBrand.height() ) {
+				//headerBarContainer.fadeOut( 800 );
+				progressTitle.html( pageTitle.html() );
+				progressBarContainer.find( '.navbar-brand' ).html( headerNavBrand.html() );
+				progressBarContainer.fadeIn( 100 );
+				progressBarContainer.addClass( 'fixed-top' );
+				progressBarContainer.addClass( 'slide-down' );
+			} else {
+				//headerBarContainer.fadeIn( 800 );
+				progressBarContainer.removeClass( 'slide-down' );
+				progressBarContainer.fadeOut( 100 );
+
+				if ( progressBarContainer.hasClass( 'fixed-top' ) ) {
+					setTimeout(function() {
+						progressBarContainer.removeClass( 'fixed-top' );
+					}, 500);
+				}
+			}
+		});
+
+		win.on( 'resize', () => {
+			progressLabel.text( setPercent() + '%' );
+			progressBar.attr(
+				{
+					value: setValue(), 
+					max: setMax()
+				} 
+			);
+		});
+
+		// Sidebar switcher
+		$( '#main-container' ).attr( 'data-previous-class', $( '#main-container' ).attr( 'class' ) );
+
+		$( '.column-control .btn-counter' ).click(function() {
+			var target = $( this ).attr( 'data-target' );
+			if ( $( this ).hasClass( 'active' ) ) {
+				$( this ).removeClass( 'active' );
+
+				if ( target == '#aside-container' ) {
+					$( '#main-container' ).attr( 'data-previous-class', $( '#main-container' ).attr( 'class' ) );
+					$( '#main-container' ).attr( 'class', 'col col-sm-12' );
+					$( '#aside-container' ).hide();
+				}
+				if ( target == '#sidebar') {
+					$( target ).show();
+				}
+			} else {
+				$( this ).addClass( 'active' );
+
+				if ( target == '#aside-container' ) {
+					$( '#main-container' ).attr( 'class', $( '#main-container' ).attr( 'data-previous-class' ) );
+					$( '#aside-container' ).show();
+				}
+				if ( target == '#sidebar') {
+					$( target ).hide();
+				}
+			}
+
+		});
+
+		// For responsive.
+		$( '.markdown-body img' ).attr('height', '');
+	});
+
+	</script>
+	<script>
+
+	jQuery( document ).ready(function( $ ) {
+
+		$( '.scroll-area a' ).on( 'click', function(e) {
+			e.preventDefault();
+			var movingPosition = 0;
+
+			if ( $( this.hash ).offset().top > $( document ).height() - $( window ).height() ) {
+				movingPosition = $( document ).height() - $( window ).height();
+			} else {
+				movingPosition = $( this.hash ).offset().top;
+			}
+
+			$( 'html, body' ).animate({
+				scrollTop: movingPosition
+			}, 500, 'swing' );
+		});
+
+		$( 'a.go-top' ).on( 'click' ,function(e) {
+			e.preventDefault();
+			$( 'html, body' ).animate( { scrollTop: 0 }, 1000 );
+		});
+
+		$( window ).scroll( function() {      
+			var windowTop =  $( window ).scrollTop();
+			if ( windowTop > 100 ) {
+				$( 'a.go-top' ).fadeIn( 300 );
+			} else {
+				$( 'a.go-top' ).fadeOut( 300 );
+			}
+		});
+
+		$( '#mynote-nav-bar' ).on( 'show.bs.collapse' , function () {
+			$( 'body' ).addClass( 'menu-is-collapsed' );
+			$( '.main-header' ).css( { 'top': '-60px' } ).animate( { 'top': '0px' }, 500 );
+			$( '.has-site-logo .search-bar' ).fadeOut( 500 );
+		});
+
+		$( '#mynote-nav-bar' ).on( 'hidden.bs.collapse' , function () {
+			$( '.main-header' ).css( { 'top': '0px' } ).animate( { 'top': '-60px' }, 500 );
+			$( '.has-site-logo .search-bar' ).fadeIn( 500 );
+			setTimeout(function() {
+				$( 'body' ).removeClass( 'menu-is-collapsed' );
+			}, 500);
+			
+		});
+	});
+
+	</script>
+	<script type='text/javascript' src='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/ClipBoard/clipboard.min.js?ver=2.0.1'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/components/prism-core.min.js?ver=1.15.0'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/plugins/autoloader/prism-autoloader.min.js?ver=1.15.0'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/plugins/toolbar/prism-toolbar.min.js?ver=1.15.0'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/plugins/line-numbers/prism-line-numbers.min.js?ver=1.15.0'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/plugins/show-language/prism-show-language.min.js?ver=1.15.0'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js?ver=1.15.0'></script>
+<script type='text/javascript' src='https://blog.g6p.cn/wp-includes/js/comment-reply.min.js?ver=5.4.1'></script>
+<script type='text/javascript' src='https://blog.g6p.cn/wp-includes/js/wp-embed.min.js?ver=5.4.1'></script>
+		<script type="text/javascript">
+			Prism.plugins.autoloader.languages_path = "https://cdn.jsdelivr.net/wp/wp-editormd/tags/10.1.2/assets/Prism.js/components/";
+		</script>
+		
+		<a href="javascript:void(0);" class="go-top" style="display: none">
+			<i class="fas fa-arrow-up"></i>
+		</a>
+	</body>
+</html>
+
+<!-- Dynamic page generated in 0.141 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2020-05-14 08:44:21 -->
+
+<!-- super cache -->

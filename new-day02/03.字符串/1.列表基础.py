@@ -81,8 +81,8 @@ aList.reverse()
 print("List : ", aList)
 
 '''
-
-print(range(0,10))
+#
+# print(range(0,10))
 
 # for i in range(10,0,-1):
 #     print(i)
@@ -107,17 +107,55 @@ dic.update(vv=789,a=234)
 #     print(value)
 
 
-for key,value in dic.items():
-    print(key,value)
+# for key,value in dic.items():
+
+#     print(key,value)
 
 
+# dic = {'name_list':['张三','李四']}
+#
+# dic['name_list'].insert(1,'麻六')
+#
+#
+#
+# dic['name_list'][2] = 'lisi'
+# dic['name_list'][2] = dic['name_list'][2].upper()
+# print(dic)
+#
 
 
+# k1 = {'k1','k2','k3','k2'}
+#
+# print(k1)
+
+# l1 = [1,2,3,43,3,2,5,7]
+#
+# # list(set(l1))
+# # print(l1)
+#
+# python= {'张三','李四','王五'}
+#
+# go = {'李四','麻六','赵七'}
+#
+# print(python|go)
+# print(python&go)
+# print(python-go)
+#
+#
+# #对称差集
+#
+# print(python^go)
+#
+name = "aleX leNb"
+
+# s1 = name.index("l")
+# s1 = name.find("X le")
+# print(s1)
 
 
+s1 = name[0:3:1]
 
+s1 = name[-2:]
 
-
-
-
-
+s1 = name.index("e")
+print(s1)

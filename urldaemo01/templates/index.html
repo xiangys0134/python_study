@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>index</h3>
+{{ good_list.name }}
+
+<h3>模板语法</h3>
+<p>{{ name }}</p>
+
+<h3>深度查询</h3>
+<p>{{ l.0 }}</p>
+
+<h3>过滤器</h3>
+<p>{{ now|date:"Y-m-d G:i:s" }}</p>
+
+<h3>标签渲染</h3>
+{% for i in l %}
+    <ul>
+        {% if i > 200 %}
+            <li>
+
+                {{ forloop.counter }},{{ i }}
+
+            </li>
+        {% endif %}
+    </ul>
+{% endfor %}
+</body>
+</html>

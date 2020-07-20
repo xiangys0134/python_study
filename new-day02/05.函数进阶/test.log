@@ -1,0 +1,14 @@
+Mon,06 Apr 2020 09:48:10 07.loggingģ��.py[line:16] DEBUG ����һ��debug��־
+Mon,06 Apr 2020 09:48:10 07.loggingģ��.py[line:17] INFO ����һ��info��־
+Mon,06 Apr 2020 09:48:10 07.loggingģ��.py[line:18] WARNING ����һ��warning��־
+Mon,06 Apr 2020 09:48:10 07.loggingģ��.py[line:19] ERROR ����һ��error��־
+Mon,06 Apr 2020 09:48:10 07.loggingģ��.py[line:20] CRITICAL ����һ��critical��־
+2020-04-06 09:53:28,436 07.logging模块.py[line:34] WARNING 这是一条warning日志
+2020-04-06 09:53:28,437 07.logging模块.py[line:35] ERROR 这是一条error日志
+2020-04-06 09:53:28,437 07.logging模块.py[line:36] CRITICAL 这是一条critical日志
+2020-04-06 09:53:57,234 07.logging模块.py[line:34] WARNING 这是一条warning日志
+2020-04-06 09:53:57,235 07.logging模块.py[line:35] ERROR 这是一条error日志
+2020-04-06 09:53:57,235 07.logging模块.py[line:36] CRITICAL 这是一条critical日志
+2020-04-06 09:54:10,534 07.logging模块.py[line:34] WARNING 这是一条warning日志
+2020-04-06 09:54:10,535 07.logging模块.py[line:35] ERROR 这是一条error日志
+2020-04-06 09:54:10,535 07.logging模块.py[line:36] CRITICAL 这是一条critical日志

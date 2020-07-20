@@ -1,0 +1,6 @@
+2020-05-27 16:36:49,807 aaaaaaa.py[line:30] WARNING 这是一条warning日志
+2020-05-27 16:36:49,808 aaaaaaa.py[line:31] ERROR 这是一条error日志
+2020-05-27 16:36:49,809 aaaaaaa.py[line:32] CRITICAL 这是一条critical日志
+2020-05-27 16:41:40,399 aaaaaaa.py[line:20] WARNING 这是一条warning日志
+2020-05-27 16:41:40,399 aaaaaaa.py[line:21] ERROR 这是一条error日志
+2020-05-27 16:41:40,399 aaaaaaa.py[line:22] CRITICAL 这是一条critical日志
