@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>index</h1>
+<h1>{{ good_list }}</h1>
+<h1>{{ good_list.0 }}</h1>
+<h1>{{ list_info.name }}</h1>
+<h1>{{ list_person.1.name }}</h1>
+<h1>{{ now|date:'Y-m-d H:M:S' }}</h1>
+<p>{{ book_list|default:"没法符合条件的书籍" }}</p>
+<p>{{ size|filesizeformat }}</p>
+<p>{{ shi|truncatechars:10 }}</p>
+<p>{{ num_a|add:4 }}</p>
+<ul>{% for i in good_list %}
+    <li>{{ forloop.counter0 }},{{ i }}</li>
+{% endfor %}
+</ul>
+
+{% if num_a > 100 %}
+    <p>{{ num_a }}</p>
+{% else %}
+    <p>值小于100</p>
+{% endif %}
+
+<h3>自定义标签</h3>
+{% load customer_fileter_tag %}
+<p>{{ num_a|multi_fileter:2 }}</p>
+</body>
+</html>

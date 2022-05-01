@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax</title>
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <script>
+       /* $(function () {
+            //绑定btnAjax点击事件
+            $('#btnAjax').click(function () {
+                $.ajax({
+                    'url': '/ajax_handle',
+                    'dataType': 'json'
+                }).success(function (data) {
+                    //进行处理
+                   // alert('aaaa')
+                    alert(data.a)
+                })
+            })
+        })
+        */
+        $(function () {
+            $('#btnAjax').click(function () {
+                $.ajax({
+                    'url': '/ajax_handle',
+                    'dataType': 'json'
+                }).success(function (data) {
+                    //alert('aaaa')
+                   //alert(data.res)
+                    if (data.res == 1){
+                        $('#message').show().html('提示信息')
+                    }
+                })
+            })
+        })
+    </script>
+    <style>
+        #message {
+            display: none;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<input type="button" id="btnAjax" value="ajax请求">
+<div id="message">返回结果</div>
+</body>
+</html>

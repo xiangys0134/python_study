@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>省市县选择案例</title>
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <script>
+        $(function () {
+            //发起一个ajax请求，获取省级地区的信息
+            $.get('/prov',function (data) {
+                //回调函数
+                res = data.data
+
+                //获取下拉列表
+                prov = $('#prov')
+                //遍历res数组，获取每一个元素
+                /*for(i=0; i<res.length;i++){
+                    id = res[i][0]
+                    atitle = res[i][1]
+
+                    option_str = '<option value="'+id +'">'+ atitle + '</option>'
+
+                    prov.append(option_str)
+                }*/
+                 $.each(res,function (index,item) {
+                     id = item[0]
+                     atitle = item[1]
+                     option_str = '<option value="'+id +'">'+ atitle + '</option>'
+
+                     prov.append(option_str)
+                 })
+            })
+
+            //绑定prov下拉列表的change事件
+            $('#prov').change(function () {
+                //发起一个ajax请求/city 获取省下面的市 县
+                prov_id = $(this).val()
+                $.get('/city/'+prov_id,function (data) {
+                    //处理回调函数
+
+                    res = data.data
+
+                    city = $('#city')
+                    city.empty().append('<option>---请选择市</option>')
+                    $.each(res,function (index,item) {
+                        id = item[0]
+                        atitle = item[0]
+
+                        option_str = '<option value="'+id +'">'+ atitle + '</option>'
+                        city.append(option_str)
+                    })
+
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+<select id="prov">
+    <option>---请选择省</option>
+</select>
+<select id="city">
+    <option>---请选择市</option>
+</select>
+<select id="dis">
+    <option>---请选择县</option>
+</select>
+</body>
+</html>
