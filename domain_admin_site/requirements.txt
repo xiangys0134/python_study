@@ -6,7 +6,7 @@ cffi==1.15.0
 chardet==4.0.0
 chinesecalendar==1.7.2
 cryptography==36.0.2
-Django==2.1.4
+Django==2.2.28
 idna==2.10
 jmespath==0.10.0
 mylib==0.0.1
