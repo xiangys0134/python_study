@@ -109,7 +109,7 @@ def query(request):
 
     # 多表分组查询
     # 查询每一个出版社的名称以及出版社出版过的书籍最高价格
-    obj = Book.objects.values("publish__id","publish__name").annotate(m=Max("price"))
+    obj = Book.objects.values("publish__id").annotate(m=Max("price"))
     print(obj)
 
 
